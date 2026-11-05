@@ -1,4 +1,4 @@
-# Queveo · ApiPelis
+# Queveo | ApiPelis
 
 **Buscador de películas en español con la API de [TMDB](https://www.themoviedb.org): resultados con póster, ficha de detalle y filtro por géneros.**
 
