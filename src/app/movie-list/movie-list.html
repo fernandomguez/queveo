@@ -42,6 +42,8 @@
           id="f-region"
           name="region"
           class="filter-select"
+          [disabled]="modoBusqueda()"
+          [class.filter-dim]="modoBusqueda()"
           [ngModel]="region()"
           (ngModelChange)="setRegion($event)"
         >
@@ -49,6 +51,9 @@
             <option [value]="r.valor">{{ r.etiqueta }}</option>
           }
         </select>
+        @if (modoBusqueda()) {
+          <span class="filter-empty">Sin efecto durante una búsqueda</span>
+        }
       </div>
       <div class="filter">
         <label class="filter-label" for="f-genero">Género</label>
@@ -76,6 +81,8 @@
           id="f-duracion"
           name="duracion"
           class="filter-select"
+          [disabled]="modoBusqueda()"
+          [class.filter-dim]="modoBusqueda()"
           [(ngModel)]="duracion"
           (ngModelChange)="setDuracion($event)"
         >
@@ -83,6 +90,9 @@
             <option [value]="d.valor">{{ d.etiqueta }}</option>
           }
         </select>
+        @if (modoBusqueda()) {
+          <span class="filter-empty">Sin efecto durante una búsqueda</span>
+        }
       </div>
       <div class="filter filter-nota">
         <span class="filter-label">Valoración mínima</span>
@@ -144,21 +154,21 @@
         <p class="status error" role="alert">{{ searchError() }}</p>
       } @else if (activeQuery()) {
         <p class="status">
-          {{ movies().length }} de {{ totalResults() }} resultados para <strong>"{{ activeQuery() }}"</strong>
+          {{ resultados().length }} de {{ totalResults() }} resultados para <strong>"{{ activeQuery() }}"</strong>
         </p>
       } @else if (hasFilters()) {
-        <p class="status">Catálogo · {{ movies().length }} de {{ totalResults() }} películas con tus filtros</p>
+        <p class="status">Catálogo · {{ resultadosVisibles().length }} de {{ totalResults() }} películas con tus filtros</p>
       } @else {
-        <p class="status">Tendencias · {{ movies().length }} de {{ totalResults() }} películas populares</p>
+        <p class="status">Tendencias · {{ resultadosVisibles().length }} de {{ totalResults() }} películas populares</p>
       }
     </div>
 
-    @if (!isLoading() && !searchError() && movies().length === 0) {
+    @if (!isLoading() && !searchError() && resultadosVisibles().length === 0) {
       <p class="empty">Sin resultados. Prueba con otro título o cambia los filtros.</p>
     }
 
     <ul class="grid">
-      @for (movie of movies(); track movie.id) {
+      @for (movie of resultadosVisibles(); track movie.id) {
         <li>
           <button
             type="button"
@@ -195,7 +205,7 @@
       }
     </ul>
 
-    @if (!isLoading() && !searchError() && currentPage() < totalPages()) {
+    @if (!isLoading() && !searchError() && hayMasPorVer()) {
       <div class="more-results">
         <button
           type="button"
@@ -206,8 +216,10 @@
         >
           @if (loadingMore()) {
             Cargando…
-          } @else if (activeQuery()) {
+          } @else if (activeQuery() && currentPage() < totalPages()) {
             Más resultados · página {{ currentPage() + 1 }} de {{ totalPages() }}
+          } @else if (activeQuery()) {
+            Mostrar más resultados
           } @else {
             Más películas · página {{ currentPage() + 1 }} de {{ totalPages() }}
           }

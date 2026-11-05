@@ -210,4 +210,100 @@ describe('MovieList', () => {
     expect(component.notaMin()).toBe(esperaNota);
     http.verify();
   });
+
+  it('should search and then apply the order client-side without refetching', () => {
+    cargarArranque(http);
+    component.searchText = 'avatar';
+    component.searchNow();
+    const SEARCH = (req: any) => req.url.includes('/search/movie');
+    http.expectOne(SEARCH).flush({
+      page: 1, results: [
+        // La clásica: más popular pero más antigua.
+        { id: 1, title: 'Clásica', poster_path: null, overview: '', release_date: '2009-01-01', vote_average: 7, vote_count: 100, popularity: 50, genre_ids: [12] },
+        // La nueva: menos popular pero más reciente.
+        { id: 2, title: 'Nueva', poster_path: null, overview: '', release_date: '2025-01-01', vote_average: 6, vote_count: 100, popularity: 90, genre_ids: [12] },
+      ], total_pages: 1, total_results: 2,
+    });
+    expect(component.modoBusqueda()).toBe(true);
+
+    // Orden por defecto «Más popular»: la de popularidad 90 primero.
+    expect(component.resultados().map((m) => m.id)).toEqual([2, 1]);
+
+    // Cambiar el orden reordena el mismo pool sin nueva petición.
+    component.setOrden('release_date.desc');
+    expect(component.resultados()[0].id).toBe(2);
+    component.setOrden('release_date.asc');
+    expect(component.resultados()[0].id).toBe(1);
+    // Y la búsqueda sigue activa: nada de catálogo completo.
+    expect(component.activeQuery()).toBe('avatar');
+    http.verify();
+  });
+
+  it('should apply genre filters client-side during an active search', () => {
+    cargarArranque(http);
+    component.searchText = 'avatar';
+    component.searchNow();
+    const SEARCH = (req: any) => req.url.includes('/search/movie');
+    http.expectOne(SEARCH).flush({
+      page: 1, results: [
+        { id: 1, title: 'Aventura', poster_path: null, overview: '', release_date: '2009-01-01', vote_average: 7, vote_count: 100, popularity: 50, genre_ids: [12] },
+        { id: 2, title: 'Animación', poster_path: null, overview: '', release_date: '2025-01-01', vote_average: 6, vote_count: 100, popularity: 90, genre_ids: [16] },
+      ], total_pages: 1, total_results: 2,
+    });
+    expect(component.resultados().length).toBe(2);
+
+    // Elegir género con la búsqueda activa: filtra el pool en cliente,
+    // no spawnea ninguna petición y no limpia la búsqueda.
+    component.setGenero('16');
+    expect(component.genreId()).toBe(16);
+    expect(component.resultados().map((m) => m.id)).toEqual([2]);
+    expect(component.activeQuery()).toBe('avatar');
+
+    // Quitar el género vuelve a enseñar los dos resultados.
+    component.setGenero('');
+    expect(component.resultados().length).toBe(2);
+    http.verify();
+  });
+
+  it('should show more client-filtered results before asking for another page', () => {
+    cargarArranque(http);
+    component.searchText = 'matrix';
+    component.searchNow();
+    const SEARCH = (req: any) => req.url.includes('/search/movie');
+    const fila = (id: number) => ({
+      id, title: 'M' + id, poster_path: null, overview: '',
+      release_date: '2020-01-01', vote_average: 7, vote_count: 100,
+      popularity: id, genre_ids: [],
+    });
+    http.expectOne(SEARCH).flush({
+      page: 1, results: [fila(1), fila(2)], total_pages: 2, total_results: 4,
+    });
+    expect(component.resultados().length).toBe(2);
+
+    // Queda espacio de sobra para mostrar: subir el recorte no pide nada.
+    component.visibleCount.set(1);
+    expect(component.resultadosVisibles().length).toBe(1);
+    component.loadMore();
+    expect(component.resultadosVisibles().length).toBe(2);
+    http.verify();
+
+    // Pool agotado: ahora sí, página 2 de /search.
+    component.loadMore();
+    http
+      .expectOne((req) => req.url.includes('/search/movie') && req.params.get('page') === '2')
+      .flush({ page: 2, results: [fila(3), fila(4)], total_pages: 2, total_results: 4 });
+    expect(component.resultados().length).toBe(4);
+  });
 });
+
+// Responde las tres peticiones que lanza ngOnInit si ningún test las
+// necesita inspeccionar: catálogo popular, géneros y sondeo de nota máxima.
+function cargarArranque(http: HttpTestingController): void {
+  http
+    .expectOne((req) => req.url.includes('/discover/movie') && !!req.params.get('release_date.lte') && req.params.get('sort_by') === 'popularity.desc')
+    .flush({ page: 1, results: [], total_pages: 1, total_results: 0 });
+  http.expectOne((req) => req.url.includes('/genre/movie/list')).flush({ genres: [] });
+  http
+    .expectOne((req) => req.url.includes('/discover/movie') && req.params.get('sort_by') === 'vote_average.desc')
+    .flush({ page: 1, results: [], total_pages: 0, total_results: 0 });
+}

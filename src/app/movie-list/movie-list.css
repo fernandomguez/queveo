@@ -316,6 +316,12 @@ h1 {
   color: var(--acento);
 }
 
+/* Select deshabilitado por estar activo el modo búsqueda. */
+.filter-dim:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 @media (max-width: 1020px) {
   .filterbar {
     grid-template-columns: 1fr 1fr;

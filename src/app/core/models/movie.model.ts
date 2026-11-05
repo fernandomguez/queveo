@@ -7,6 +7,11 @@ export interface Movie {
   release_date: string;
   vote_average: number;
   vote_count?: number;
+  // Llegan en search/movie y discover: el primero permite filtrar por
+  // género en cliente cuando la búsqueda activa (el endpoint /search de
+  // TMDB no admite with_genres) y el segundo ordenar por popularidad.
+  genre_ids?: number[];
+  popularity?: number;
 }
 
 export interface Genre {

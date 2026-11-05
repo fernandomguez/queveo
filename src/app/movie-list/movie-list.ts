@@ -3,6 +3,7 @@ import {
   OnInit,
   OnDestroy,
   HostListener,
+  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -84,6 +85,36 @@ export class MovieList implements OnInit, OnDestroy {
   // País cuyas fechas de estreno mandan: ES/US o '' (fecha primaria
   // mundial). TMDB lo resuelve en el servidor con el parámetro region.
   region = signal<string>('ES');
+  // Nº de resultados mostrados en modo búsqueda: /search no admite orden
+  // ni filtros, así que se pagina el pool filtrado en cliente.
+  visibleCount = signal(20);
+
+  // Búsqueda activa: /search(movie) de TMDB no acepta sort_by ni filtros,
+  // así que en búsqueda el pool completo queda en movies() y un computed
+  // deriva aquí la vista combinando texto + orden + género + nota.
+  // Cambiar cualquier filtro mientras se busca no vuelve a pedir nada a
+  // la API: solo recalcula la vista.
+  modoBusqueda = computed(() => this.activeQuery() !== '');
+
+  // Vista completa ya filtrada y ordenada según todos los filtros activos.
+  resultados = computed<Movie[]>(() =>
+    this.modoBusqueda() ? this.aplicarFiltrosBusqueda() : this.movies(),
+  );
+
+  // Recorte visible en búsqueda (paginado en cliente con «Más resultados»).
+  resultadosVisibles = computed<Movie[]>(() =>
+    this.modoBusqueda()
+      ? this.resultados().slice(0, this.visibleCount())
+      : this.resultados(),
+  );
+
+  // ¿Queda algo por traer o mostrar? Decide el botón «Más resultados».
+  hayMasPorVer = computed(() =>
+    this.modoBusqueda()
+      ? this.visibleCount() < this.resultados().length ||
+        this.currentPage() < this.totalPages()
+      : this.currentPage() < this.totalPages(),
+  );
 
   hayRegiones: Duracion[] = [
     { valor: 'ES', etiqueta: 'Estrenos España' },
@@ -100,6 +131,8 @@ export class MovieList implements OnInit, OnDestroy {
   private regionOriginal = 'ES';
   // Paso y mínimo del slider de valoración; a 1 significa «cualquier nota».
   private readonly NOTA_MIN = 1;
+  // Tamaño de página del recorte en cliente en modo búsqueda.
+  private readonly PAGINA_BUSQUEDA = 20;
 
   private tmdbService = inject(TmdbService);
   private searchSub: Subscription | null = null;
@@ -153,14 +186,15 @@ export class MovieList implements OnInit, OnDestroy {
     );
   }
 
-  // Cambio de género: limpia la búsqueda (un título concreto manda sobre
-  // los filtros) y recarga página 1 con el valor nuevo.
+  // Cambio de género: con búsqueda activa el género se aplica al pool de
+  // resultados en cliente (computed) sin pedir nada; en catálogo, recarga
+  // página 1 con el valor nuevo contra /discover.
   setGenero(value: string): void {
     if (this.generoOriginal === value) return;
     this.generoOriginal = value;
     const n = Number(value);
     this.genreId.set(Number.isFinite(n) && n > 0 ? n : null);
-    this.searchText = '';
+    if (this.modoBusqueda()) return;
     this.load();
     this.probarNotaMax();
   }
@@ -169,7 +203,7 @@ export class MovieList implements OnInit, OnDestroy {
     if (this.duracionOriginal === value) return;
     this.duracionOriginal = value;
     this.duracion.set(value);
-    this.searchText = '';
+    if (this.modoBusqueda()) return;
     this.load();
     this.probarNotaMax();
   }
@@ -181,7 +215,7 @@ export class MovieList implements OnInit, OnDestroy {
     if (valor !== null && valor > this.notaMax()) return;
     if ((this.notaMin() ?? null) === valor) return;
     this.notaMin.set(valor);
-    this.searchText = '';
+    if (this.modoBusqueda()) return;
     this.load();
   }
 
@@ -193,46 +227,69 @@ export class MovieList implements OnInit, OnDestroy {
     this.notaMaxSub = this.tmdbService
       .getNotaMax(this.genreId(), this.duracion(), this.region())
       .subscribe({
-        next: (res) => {
-          const primera = (res.results ?? [])[0]?.vote_average ?? null;
-          if (primera === null || primera <= this.NOTA_MIN) {
-            this.notasDisponibles.set(false);
-            this.notaMax.set(this.NOTA_MIN);
-            if (this.notaMin()) {
-              this.notaMin.set(null);
-              this.load();
-            }
-            return;
-          }
-          // Baja al paso del slider (0,5) para que no se quede entre dos.
-          const tope = Math.floor(primera * 2) / 2;
-          this.notasDisponibles.set(true);
-          this.notaMax.set(Math.max(tope, this.NOTA_MIN));
-          if ((this.notaMin() ?? 0) > tope) {
-            this.notaMin.set(null);
-            this.load();
-          }
-        },
+        next: (res) =>
+          this.ajustarNotaMax((res.results ?? [])[0]?.vote_average ?? null),
         // Sin respuesta, el slider queda como estaba y nadie rompe nada.
         error: () => this.notasDisponibles.set(this.notaMax() > this.NOTA_MIN),
       });
+  }
+
+  // En búsqueda la nota máxima debe salir del pool ya descargado (el
+  // sondeo /discover no pisa a una búsqueda activa): usuarios con al menos
+  // 50 votos para descartar esas pelis de nicho con 10,0 y 3 votos.
+  recalcNotas(): void {
+    if (!this.modoBusqueda()) {
+      this.probarNotaMax();
+      return;
+    }
+    const conVotos = this.movies().filter((m) => (m.vote_count ?? 0) >= 50);
+    const fuente = conVotos.length ? conVotos : this.movies();
+    const primera = fuente.length
+      ? Math.max(...fuente.map((m) => m.vote_average ?? 0))
+      : null;
+    this.ajustarNotaMax(primera);
+  }
+
+  // Tope del slider según la mayor nota observada; si la nota elegida se
+  // queda por encima, vuelve a «cualquier nota». En catálogo, recarga con
+  // la nota corregida (en búsqueda el computed ya re-filtra solo).
+  private ajustarNotaMax(primera: number | null): void {
+    if (primera === null || primera <= this.NOTA_MIN) {
+      this.notasDisponibles.set(false);
+      this.notaMax.set(this.NOTA_MIN);
+      if (this.notaMin()) {
+        this.notaMin.set(null);
+        if (!this.modoBusqueda()) this.load();
+      }
+      return;
+    }
+    // Baja al paso del slider (0,5) para que no se quede entre dos.
+    const tope = Math.floor(primera * 2) / 2;
+    this.notasDisponibles.set(true);
+    this.notaMax.set(Math.max(tope, this.NOTA_MIN));
+    if ((this.notaMin() ?? 0) > tope) {
+      this.notaMin.set(null);
+      if (!this.modoBusqueda()) this.load();
+    }
   }
 
   setOrden(value: string): void {
     if (this.ordenOriginal === value) return;
     this.ordenOriginal = value;
     this.orden.set(value);
-    this.searchText = '';
+    if (this.modoBusqueda()) return;
     this.load();
   }
 
   // Cambiar de país: cambia qué fechas de estreno cuentan, así que
-  // recarga y el sondeo de nota máxima vuelve a preguntar.
+  // recarga y el sondeo de nota máxima vuelve a preguntar. Con búsqueda
+  // activa el orden de estreno regional lo decide TMDB en /discover, no
+  // aquí, así que solo se recuerda para el próximo catálogo.
   setRegion(value: string): void {
     if (this.regionOriginal === value) return;
     this.regionOriginal = value;
     this.region.set(value);
-    this.searchText = '';
+    if (this.modoBusqueda()) return;
     this.load();
     this.probarNotaMax();
   }
@@ -254,8 +311,10 @@ export class MovieList implements OnInit, OnDestroy {
     this.probarNotaMax();
   }
 
-  // La búsqueda manda: si hay texto, ignora los filtros (TMDB no busca
-  // y descubre a la vez) y lo dice así en la barra de estado.
+  // La búsqueda rellena el pool: /search de TMDB no admite ni orden ni
+  // filtros, así que se guardan todos los resultados y la vista final
+  // (orden + género + nota) la deriva un computed en cliente. Cambiar
+  // luego cualquier filtro no repite la petición.
   searchNow(): void {
     const q = this.searchText.trim();
     this.activeQuery.set(q);
@@ -272,40 +331,64 @@ export class MovieList implements OnInit, OnDestroy {
     }
 
     this.searchSub?.unsubscribe();
+    this.movies.set([]);
+    this.visibleCount.set(this.PAGINA_BUSQUEDA);
     this.startListRequest(1);
     this.searchSub = this.tmdbService.searchMovies(q).subscribe({
-      next: (res) => this.onPageLoaded(res, 1),
+      next: (res) => {
+        this.onPageLoaded(res, 1);
+        this.recalcNotas();
+      },
       error: () =>
         this.onListError(`No se pudo buscar "${q}". Inténtalo de nuevo.`, 1),
     });
   }
 
   // Carga la página siguiente del listado abierto y añade las películas
-  // al final, sin perder las ya mostradas.
+  // al final, sin perder las ya mostradas. En búsqueda, primero agota lo
+  // ya descargado (sube el recorte en cliente) y solo cuando el pool se
+  // queda corto pide la página siguiente a /search.
   loadMore(): void {
-    if (this.loadingMore() || this.currentPage() >= this.totalPages()) return;
+    if (this.loadingMore()) return;
+
+    if (this.modoBusqueda()) {
+      if (this.visibleCount() < this.resultados().length) {
+        this.visibleCount.set(this.visibleCount() + this.PAGINA_BUSQUEDA);
+        return;
+      }
+      if (this.currentPage() >= this.totalPages()) return;
+      const siguientePool = this.currentPage() + 1;
+
+      this.searchSub?.unsubscribe();
+      this.startListRequest(siguientePool);
+      this.searchSub = this.tmdbService
+        .searchMovies(this.activeQuery(), siguientePool)
+        .subscribe({
+          next: (res) => {
+            this.onPageLoaded(res, siguientePool);
+            this.recalcNotas();
+          },
+          error: () => this.onLoadMoreError(),
+        });
+      return;
+    }
+
+    if (this.currentPage() >= this.totalPages()) return;
     const siguiente = this.currentPage() + 1;
 
     this.searchSub?.unsubscribe();
     this.startListRequest(siguiente);
-    const q = this.activeQuery();
-    if (q) {
-      this.searchSub = this.tmdbService.searchMovies(q, siguiente).subscribe({
+    this.searchSub = this.tmdbService
+      .loadCatalogo(siguiente, this.genreId(), this.duracion(), this.notaMin(), this.orden(), this.region())
+      .subscribe({
         next: (res) => this.onPageLoaded(res, siguiente),
         error: () => this.onLoadMoreError(),
       });
-    } else {
-      this.searchSub = this.tmdbService
-        .loadCatalogo(siguiente, this.genreId(), this.duracion(), this.notaMin(), this.orden(), this.region())
-        .subscribe({
-          next: (res) => this.onPageLoaded(res, siguiente),
-          error: () => this.onLoadMoreError(),
-        });
-    }
   }
 
   clearSearch(): void {
     this.searchText = '';
+    this.visibleCount.set(this.PAGINA_BUSQUEDA);
     this.load();
   }
 
@@ -374,6 +457,39 @@ export class MovieList implements OnInit, OnDestroy {
     return peliculas.filter(
       (p) => !!p.release_date && p.release_date <= hoy,
     );
+  }
+
+  // Composición de filtros sobre los resultados de /search, que no admite
+  // ninguno en servidor: género y nota se filtran aquí y el orden se
+  // aplica con el comparador. Lo consume la computed `resultados`.
+  private aplicarFiltrosBusqueda(): Movie[] {
+    let lista = this.movies();
+    const genreId = this.genreId();
+    if (genreId !== null) {
+      lista = lista.filter((m) => m.genre_ids?.includes(genreId));
+    }
+    const notaMin = this.notaMin();
+    if (notaMin !== null) {
+      lista = lista.filter((m) => (m.vote_average ?? 0) >= notaMin);
+    }
+    return [...lista].sort((a, b) => this.compararOrden(a, b, this.orden()));
+  }
+
+  // Comparador según «Ordenar por»: popularidad (popularity.desc), u
+  // estreno ascendente/descendente. Las películas sin fecha van al final.
+  private compararOrden(a: Movie, b: Movie, orden: string): number {
+    switch (orden) {
+      case 'release_date.asc':
+      case 'release_date.desc': {
+        const fa = a.release_date || '0000-00-00';
+        const fb = b.release_date || '0000-00-00';
+        return orden === 'release_date.asc'
+          ? fa.localeCompare(fb)
+          : fb.localeCompare(fa);
+      }
+      default:
+        return (b.popularity ?? 0) - (a.popularity ?? 0);
+    }
   }
 
   selectMovie(movie: Movie, opener?: HTMLElement): void {
