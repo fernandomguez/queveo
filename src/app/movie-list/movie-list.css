@@ -176,10 +176,10 @@ h1 {
 .filterbar {
   display: grid;
   grid-template-columns:
-    minmax(140px, 1fr)
+    minmax(168px, 1fr)
     minmax(150px, 1fr)
     minmax(155px, 1fr)
-    minmax(260px, 1.4fr)
+    minmax(210px, 1.4fr)
     minmax(155px, 1fr)
     auto;
   gap: 0.9rem 1rem;
@@ -229,10 +229,10 @@ h1 {
   font-size: 0.85rem;
 }
 
-/* Chips de valoración: fila única de altura fija, breakpoints fijos. */
+/* Chips de valoración: fila que envuelve cuando falta sitio. */
 .chipset {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 0.3rem;
 }
 
