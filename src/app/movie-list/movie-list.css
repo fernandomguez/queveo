@@ -38,8 +38,8 @@
    ============================================================ */
 
 .hero {
-  border-top: 6px solid var(--tinta);
-  border-bottom: 1px solid var(--tinta);
+  border-top: 4px solid var(--acento);
+  border-bottom: 1px solid var(--linea);
   background: var(--papel);
 }
 
@@ -59,11 +59,55 @@
 
 h1 {
   margin: 0;
-  font-family: 'Fraunces', Georgia, serif;
-  font-weight: 700;
-  font-size: clamp(2.6rem, 5vw, 3.8rem);
+  font-family: 'Unbounded', 'Archivo', system-ui, sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.9rem, 4.6vw, 3.2rem);
   letter-spacing: -0.02em;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.04em;
+}
+
+.wm-text {
+  background: linear-gradient(100deg, #F6EEFF 38%, #FF5C9A 50%, #F6EEFF 62%) 100% 0 / 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: barrido 5s ease-in-out infinite;
+}
+
+.wm-ojo {
+  width: 0.86em;
+  height: 0.86em;
+  display: block;
+  overflow: visible;
+}
+
+.wm-ojo .parpado {
+  transform-origin: 50% 50%;
+  animation: parpadeo 6s infinite;
+}
+
+.wm-ojo .pupila {
+  animation: mirar 6s ease-in-out infinite;
+}
+
+@keyframes barrido {
+  0%, 15% { background-position: 100% 0; }
+  60%, 100% { background-position: 0 0; }
+}
+
+@keyframes parpadeo {
+  0%, 90%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.08); }
+}
+
+@keyframes mirar {
+  0%, 20% { transform: translateX(0); }
+  35%, 55% { transform: translateX(5px); }
+  70%, 100% { transform: translateX(-4px); }
 }
 
 .subtitle {
@@ -100,7 +144,7 @@ h1 {
   font-size: 1rem;
   font-family: inherit;
   border-radius: 4px;
-  border: 1px solid var(--tinta);
+  border: 1px solid var(--borde);
   background: var(--papel);
   color: var(--tinta);
   outline: none;
@@ -124,7 +168,7 @@ h1 {
   height: 48px;
   padding: 0 1.1rem;
   border-radius: 4px;
-  border: 1px solid var(--tinta);
+  border: 1px solid var(--borde);
   background: var(--papel);
   color: var(--tinta);
   cursor: pointer;
@@ -136,14 +180,15 @@ h1 {
 }
 
 .btn.primary {
-  background: var(--tinta);
+  background: var(--acento);
+  border-color: var(--acento);
   color: var(--papel);
 }
 
 .btn:hover:not([disabled]),
 .btn.primary:hover:not([disabled]) {
-  background: var(--acento);
-  border-color: var(--acento);
+  background: var(--tinta);
+  border-color: var(--tinta);
   color: var(--papel);
 }
 
@@ -201,10 +246,10 @@ h1 {
   width: 100%;
   padding: 0 0.8rem;
   border-radius: 4px;
-  border: 1px solid var(--tinta);
+  border: 1px solid var(--borde);
   background-color: var(--papel);
   /* Flecha fija dibujada en SVG: el tamaño no depende del texto elegido. */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231A1815' stroke-width='2'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23F6EEFF' stroke-width='2'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.9rem center;
   appearance: none;
@@ -240,7 +285,7 @@ h1 {
   min-height: 48px;
   padding: 0 0.7rem;
   border-radius: 4px;
-  border: 1px solid var(--tinta);
+  border: 1px solid var(--borde);
   background: var(--papel);
   color: var(--tinta);
   font-family: inherit;
@@ -255,7 +300,8 @@ h1 {
 }
 
 .nota-chip.activo {
-  background: var(--tinta);
+  background: var(--acento);
+  border-color: var(--acento);
   color: var(--papel);
 }
 
@@ -338,7 +384,7 @@ h1 {
   border: 1px dashed var(--tinta-suave);
   padding: 1.4rem;
   border-radius: 4px;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Unbounded', 'Archivo', system-ui, sans-serif;
   font-size: 1.1rem;
   color: var(--tinta-suave);
 }
@@ -396,7 +442,7 @@ h1 {
   height: 100%;
   min-height: 240px;
   color: var(--tinta-suave);
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Unbounded', 'Archivo', system-ui, sans-serif;
 }
 
 /* La nota como sello de tinta: círculo negro, número en papel. */
@@ -408,8 +454,8 @@ h1 {
   border-radius: 50%;
   font-size: 0.85rem;
   font-weight: 600;
-  background: var(--tinta);
-  color: var(--papel);
+  background: var(--iris);
+  color: #fff;
 }
 
 /* En la tarjeta, el sello vive dentro del póster, en su esquina. */
@@ -475,7 +521,7 @@ h1 {
   position: sticky;
   top: 1rem;
   background: var(--papel);
-  border: 1px solid var(--tinta);
+  border: 1px solid var(--borde);
   border-radius: 4px;
   overflow: hidden;
   max-height: calc(100vh - 2rem);
@@ -488,7 +534,7 @@ h1 {
 }
 
 .detail-empty h2 {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Unbounded', 'Archivo', system-ui, sans-serif;
 }
 
 .close {
@@ -496,7 +542,7 @@ h1 {
   height: 44px;
   padding: 0 1rem;
   border-radius: 4px;
-  border: 1px solid var(--tinta);
+  border: 1px solid var(--borde);
   background: var(--papel);
   color: var(--tinta);
   cursor: pointer;
@@ -529,7 +575,7 @@ h1 {
 
 .detail-content h2 {
   margin: 0 0 0.4rem;
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Unbounded', 'Archivo', system-ui, sans-serif;
   font-weight: 600;
   font-size: 1.55rem;
   line-height: 1.2;
@@ -555,7 +601,7 @@ h1 {
 
 .tagline {
   color: var(--tinta-suave);
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Unbounded', 'Archivo', system-ui, sans-serif;
   font-style: italic;
   font-size: 1.05rem;
   margin: 0 0 0.75rem;
@@ -649,7 +695,7 @@ h1 {
     max-height: 82vh;
     border-radius: 6px 6px 0 0;
     border-bottom: none;
-    box-shadow: 0 -4px 24px rgba(26, 24, 21, 0.25);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.55);
     transform: translateY(105%);
     transition: transform 0.22s ease;
     z-index: 20;
@@ -671,5 +717,9 @@ h1 {
 
   .card:hover {
     transform: none;
+  }
+
+  .wm-text {
+    background-position: 0 0;
   }
 }

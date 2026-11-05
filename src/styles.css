@@ -1,23 +1,16 @@
 /* ============================================================
-   Queveo · «Cartelera de papel»
-   Tokens: tinta y papel. Cero degradados, cero brillos:
-   jerarquía por tipografía, espaciado y filetes de 1px.
+   Queveo · «Proyector»
+   Noche morada, ojo rosa. Letra ancha Unbounded para la marca,
+   Archivo para leer. Tokens con los nombres antiguos (papel/tinta)
+   para no tocar cada regla: papel = fondo, tinta = texto.
    ============================================================ */
 
 @font-face {
-  font-family: 'Fraunces';
+  font-family: 'Unbounded';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 800;
   font-display: swap;
-  src: url('/fonts/fraunces-600.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Fraunces';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/fraunces-700.woff2') format('woff2');
+  src: url('/fonts/unbounded-800.ttf') format('truetype');
 }
 
 @font-face {
@@ -45,14 +38,16 @@
 }
 
 :root {
-  /* Paleta plana */
-  --papel: #F4EFE6;
-  --papel-2: #ECE5D6;
-  --tinta: #1A1815;
-  --tinta-suave: #6B6459;
-  --linea: #CFC7B4;
-  --acento: #C22F2F;
-  --acento-oscuro: #A32424;
+  color-scheme: dark;
+  --papel: #170B2B;
+  --papel-2: #241342;
+  --tinta: #F6EEFF;
+  --tinta-suave: #B9A6DD;
+  --linea: #3A2563;
+  --acento: #FF5C9A;
+  --acento-oscuro: #E0407F;
+  --iris: #7A4DFF;
+  --borde: #6A4FA3;
 }
 
 * { box-sizing: border-box; }
@@ -77,6 +72,6 @@ body {
 img { max-width: 100%; }
 
 ::selection {
-  background: var(--tinta);
+  background: var(--acento);
   color: var(--papel);
 }

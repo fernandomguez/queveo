@@ -3,7 +3,18 @@
 <header class="hero">
   <div class="hero-inner">
     <div>
-      <h1>Queveo</h1>
+      <h1 aria-label="Queveo">
+        <span class="wm-text" aria-hidden="true">QUEVE</span>
+        <svg class="wm-ojo" viewBox="0 0 100 100" aria-hidden="true">
+          <g class="parpado">
+            <path d="M4 50 C20 20 38 14 50 14 C62 14 80 20 96 50 C80 80 62 86 50 86 C38 86 20 80 4 50 Z" fill="none" stroke="#F6EEFF" stroke-width="7" stroke-linejoin="round" />
+            <g class="pupila">
+              <circle cx="50" cy="50" r="21" fill="#7A4DFF" />
+              <path d="M44 41 V59 L59 50 Z" fill="#FF5C9A" stroke="#FF5C9A" stroke-width="3" stroke-linejoin="round" />
+            </g>
+          </g>
+        </svg>
+      </h1>
       <p class="subtitle">¿Qué veo esta noche? Echa un vistazo al catálogo para ayudarte a tomar la decisión</p>
     </div>
     <form class="searchbar" (ngSubmit)="searchNow()" role="search" aria-label="Buscar películas">
