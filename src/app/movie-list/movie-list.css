@@ -178,9 +178,9 @@ h1 {
   grid-template-columns:
     minmax(168px, 1fr)
     minmax(150px, 1fr)
-    minmax(155px, 1fr)
+    minmax(165px, 1fr)
     minmax(210px, 1.4fr)
-    minmax(155px, 1fr)
+    minmax(150px, 1fr)
     auto;
   gap: 0.9rem 1rem;
   align-items: end;
