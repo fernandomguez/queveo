@@ -50,7 +50,7 @@ export class MovieList implements OnInit, OnDestroy {
   ];
 
   hayOrdenes: Duracion[] = [
-    { valor: 'popularity.desc', etiqueta: 'Más populares primero' },
+    { valor: 'popularity.desc', etiqueta: 'Más populares' },
     { valor: 'release_date.desc', etiqueta: 'Estreno más reciente' },
     { valor: 'release_date.asc', etiqueta: 'Estreno más antiguo' },
   ];
@@ -86,7 +86,7 @@ export class MovieList implements OnInit, OnDestroy {
   region = signal<string>('ES');
 
   hayRegiones: Duracion[] = [
-    { valor: 'ES', etiqueta: 'Estrenos en España' },
+    { valor: 'ES', etiqueta: 'Estrenos España' },
     { valor: 'US', etiqueta: 'Estrenos en EE. UU.' },
     { valor: '', etiqueta: 'Cualquier país' },
   ];
