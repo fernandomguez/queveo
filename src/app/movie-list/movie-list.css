@@ -1,0 +1,675 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 50;
+  background: var(--tinta);
+  color: var(--papel);
+  padding: 0.7rem 1.1rem;
+  border-radius: 0 0 6px 6px;
+  font-weight: 600;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* ============================================================
+   Cabecera tipo cartelera: filete grueso arriba, título serif
+   y el buscador a la derecha. Sin degradados ni brillos.
+   ============================================================ */
+
+.hero {
+  border-top: 6px solid var(--tinta);
+  border-bottom: 1px solid var(--tinta);
+  background: var(--papel);
+}
+
+.hero-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 1.5rem;
+}
+
+.masthead-flex {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+h1 {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(2.6rem, 5vw, 3.8rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  font-size: 0.95rem;
+  color: var(--tinta-suave);
+}
+
+.searchbar {
+  flex: 0 1 560px;
+  min-width: 280px;
+}
+
+.search-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.search-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-controls input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border-radius: 4px;
+  border: 1px solid var(--tinta);
+  background: var(--papel);
+  color: var(--tinta);
+  outline: none;
+}
+
+.search-controls input::placeholder {
+  color: var(--tinta-suave);
+}
+
+.search-controls input:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Botones: rectángulos de tinta. Primario = fondo tinta;
+   hover = acento carmín. Nada de píldoras con brillos.
+   ============================================================ */
+
+.btn {
+  height: 48px;
+  padding: 0 1.1rem;
+  border-radius: 4px;
+  border: 1px solid var(--tinta);
+  background: var(--papel);
+  color: var(--tinta);
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn.primary {
+  background: var(--tinta);
+  color: var(--papel);
+}
+
+.btn:hover:not([disabled]),
+.btn.primary:hover:not([disabled]) {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: var(--papel);
+}
+
+.btn[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn:focus-visible,
+.close:focus-visible,
+.card:focus-visible,
+.nota-chip:focus-visible,
+.filter-select:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+.btn.small {
+  height: auto;
+  min-height: 48px;
+  padding: 0 0.9rem;
+  font-size: 0.85rem;
+}
+
+/* ============================================================
+   Barra de filtros en GRID con zonas fijas: cada filtro en su
+   celda, así nada empuja a nada al cambiar de opción o cargar.
+   ============================================================ */
+
+.filterbar {
+  display: grid;
+  grid-template-columns:
+    minmax(140px, 1fr)
+    minmax(150px, 1fr)
+    minmax(155px, 1fr)
+    minmax(260px, 1.4fr)
+    minmax(155px, 1fr)
+    auto;
+  gap: 0.9rem 1rem;
+  align-items: end;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--linea);
+  margin-top: 1.5rem;
+}
+
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.filter-select {
+  min-height: 48px;
+  width: 100%;
+  padding: 0 0.8rem;
+  border-radius: 4px;
+  border: 1px solid var(--tinta);
+  background-color: var(--papel);
+  /* Flecha fija dibujada en SVG: el tamaño no depende del texto elegido. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231A1815' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.9rem center;
+  appearance: none;
+  color: var(--tinta);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.filter-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+/* «ⓘ» al lado de Popularidad TMDB: pasa el ratón y explica la métrica */
+.hint {
+  cursor: help;
+  opacity: 0.75;
+  font-size: 0.85rem;
+}
+
+/* Chips de valoración: fila única de altura fija, breakpoints fijos. */
+.chipset {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.3rem;
+}
+
+.nota-chip {
+  min-height: 48px;
+  padding: 0 0.7rem;
+  border-radius: 4px;
+  border: 1px solid var(--tinta);
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nota-chip:hover:not([disabled]) {
+  background: var(--papel-2);
+}
+
+.nota-chip.activo {
+  background: var(--tinta);
+  color: var(--papel);
+}
+
+.nota-chip[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.filter-empty {
+  font-size: 0.8rem;
+  color: var(--acento);
+}
+
+@media (max-width: 1020px) {
+  .filterbar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-nota {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 520px) {
+  .filterbar {
+    grid-template-columns: 1fr;
+  }
+
+  .filter,
+  .filter-nota {
+    width: 100%;
+  }
+
+  .chipset {
+    flex-wrap: wrap;
+  }
+}
+
+/* ============================================================
+   Catálogo: barra de estado de altura fija y rejilla de
+   «carteles» con filete de tinta.
+   ============================================================ */
+
+.layout {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 390px;
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Altura reservada: el texto cambia de largo (Cargando… / resultados /
+   catálogo) y nada de lo que hay debajo se mueve. */
+.statusbar {
+  min-height: 2rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--linea);
+  color: var(--tinta-suave);
+  font-size: 0.9rem;
+}
+
+.status {
+  margin: 0;
+  padding-bottom: 0.5rem;
+}
+
+.status.error {
+  color: var(--acento);
+  font-weight: 600;
+}
+
+.status strong {
+  color: var(--tinta);
+}
+
+.empty {
+  border: 1px dashed var(--tinta-suave);
+  padding: 1.4rem;
+  border-radius: 4px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--tinta-suave);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1.25rem 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.card {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: center;
+  background: var(--papel);
+  border: 1px solid var(--linea);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.card:hover {
+  border-color: var(--tinta);
+}
+
+.card.active {
+  border-color: var(--acento);
+  box-shadow: inset 0 0 0 1px var(--acento);
+}
+
+.poster {
+  position: relative;
+  display: block;
+  aspect-ratio: 2 / 3;
+  background: var(--papel-2);
+}
+
+.poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.no-poster {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-height: 240px;
+  color: var(--tinta-suave);
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+/* La nota como sello de tinta: círculo negro, número en papel. */
+.rating {
+  display: inline-grid;
+  place-items: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--tinta);
+  color: var(--papel);
+}
+
+/* En la tarjeta, el sello vive dentro del póster, en su esquina. */
+.poster .rating {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+}
+
+.cta {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.6rem;
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--tinta);
+  color: var(--papel);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.card:hover .cta,
+.card:focus-visible .cta {
+  opacity: 1;
+  transform: none;
+}
+
+@media (hover: none) {
+  .cta { opacity: 1; transform: none; }
+}
+
+.card-body {
+  display: block;
+  padding: 0.7rem 0.8rem 0.85rem;
+}
+
+.card-title {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+  min-height: 2.4em;
+  margin-bottom: 0.25rem;
+}
+
+.meta {
+  display: block;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--tinta-suave);
+}
+
+/* ============================================================
+   Panel de detalle: hoja de papel con filetes entre secciones.
+   ============================================================ */
+
+.detail {
+  position: sticky;
+  top: 1rem;
+  background: var(--papel);
+  border: 1px solid var(--tinta);
+  border-radius: 4px;
+  overflow: hidden;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+}
+
+.detail-empty {
+  padding: 2rem 1.5rem;
+  color: var(--tinta-suave);
+}
+
+.detail-empty h2 {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.close {
+  margin: 1rem 1rem 0;
+  height: 44px;
+  padding: 0 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--tinta);
+  background: var(--papel);
+  color: var(--tinta);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.close:hover:not([disabled]) {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: var(--papel);
+}
+
+.backdrop-wrap {
+  margin-top: 1rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+.backdrop {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+}
+
+.detail-content {
+  padding: 1.2rem 1.4rem 1.5rem;
+}
+
+.detail-content h2 {
+  margin: 0 0 0.4rem;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.55rem;
+  line-height: 1.2;
+}
+
+.detail-content h2:focus {
+  outline: none;
+}
+
+.detail-content h2:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 3px;
+}
+
+.detail-content h3 {
+  margin: 1.2rem 0 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.tagline {
+  color: var(--tinta-suave);
+  font-family: 'Fraunces', Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  margin: 0 0 0.75rem;
+}
+
+.meta-row {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  align-items: center;
+  color: var(--tinta);
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--linea);
+}
+
+/* Sello de nota del panel: un poco más grande que el de la tarjeta,
+   con el número centrado y nada más dentro. */
+.meta-row .rating {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 0.85rem;
+  flex: none;
+}
+
+.votes {
+  color: var(--tinta-suave);
+  font-size: 0.9rem;
+}
+
+/* Géneros como texto separado por puntos, sin píldoras de colores */
+.genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.55rem;
+  list-style: none;
+  margin: 0.75rem 0;
+  padding: 0;
+  font-size: 0.9rem;
+  color: var(--tinta-suave);
+}
+
+.genres li + li::before {
+  content: '·';
+  margin-right: 0.55rem;
+}
+
+.overview {
+  line-height: 1.65;
+  color: var(--tinta);
+}
+
+.facts {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0 0;
+  padding: 0;
+}
+
+.facts div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid var(--linea);
+  padding-top: 0.5rem;
+}
+
+.facts dt {
+  color: var(--tinta-suave);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ============================================================
+   Responsive y movimiento
+   ============================================================ */
+
+@media (max-width: 1020px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 82vh;
+    border-radius: 6px 6px 0 0;
+    border-bottom: none;
+    box-shadow: 0 -4px 24px rgba(26, 24, 21, 0.25);
+    transform: translateY(105%);
+    transition: transform 0.22s ease;
+    z-index: 20;
+  }
+
+  .detail.open {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

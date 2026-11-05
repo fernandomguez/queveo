@@ -1,0 +1,278 @@
+<a class="skip-link" href="#catalogo">Saltar al catálogo</a>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1>Queveo</h1>
+      <p class="subtitle">¿Qué veo esta noche? Echa un vistazo al catálogo para ayudarte a tomar la decisión</p>
+    </div>
+    <form class="searchbar" (ngSubmit)="searchNow()" role="search" aria-label="Buscar películas">
+      <label class="search-label" for="q">Buscar película por título</label>
+      <div class="search-controls">
+        <input
+          id="q"
+          type="search"
+          name="q"
+          [(ngModel)]="searchText"
+          placeholder="Avatar, Origen..."
+          autocomplete="off"
+        />
+        <button type="submit" class="btn primary">Buscar</button>
+        @if (searchText || activeQuery()) {
+          <button type="button" class="btn" (click)="clearSearch()">Limpiar</button>
+        }
+      </div>
+    </form>
+
+    <div class="filterbar" role="group" aria-label="Filtrar el catálogo">
+      <div class="filter">
+        <label class="filter-label" for="f-region">Estrenos de</label>
+        <select
+          id="f-region"
+          name="region"
+          class="filter-select"
+          [ngModel]="region()"
+          (ngModelChange)="setRegion($event)"
+        >
+          @for (r of hayRegiones; track r.valor) {
+            <option [value]="r.valor">{{ r.etiqueta }}</option>
+          }
+        </select>
+      </div>
+      <div class="filter">
+        <label class="filter-label" for="f-genero">Género</label>
+        <select
+          id="f-genero"
+          name="genero"
+          class="filter-select"
+          [disabled]="genres().length === 0"
+          [ngModel]="genreId() ?? ''"
+          (ngModelChange)="setGenero($event)"
+        >
+          @if (genres().length === 0) {
+            <option value="">Cargando géneros…</option>
+          } @else {
+            <option value="">Todos</option>
+            @for (g of genres(); track g.id) {
+              <option [value]="g.id">{{ g.name }}</option>
+            }
+          }
+        </select>
+      </div>
+      <div class="filter">
+        <label class="filter-label" for="f-duracion">Duración</label>
+        <select
+          id="f-duracion"
+          name="duracion"
+          class="filter-select"
+          [(ngModel)]="duracion"
+          (ngModelChange)="setDuracion($event)"
+        >
+          @for (d of hayDuraciones; track d.valor) {
+            <option [value]="d.valor">{{ d.etiqueta }}</option>
+          }
+        </select>
+      </div>
+      <div class="filter filter-nota">
+        <span class="filter-label">Valoración mínima</span>
+        <div class="chipset" role="group" aria-label="Valoración mínima">
+          <button
+            type="button"
+            class="nota-chip"
+            [class.activo]="notaMin() === null"
+            [disabled]="!notasDisponibles()"
+            (click)="setNota(null)"
+          >
+            Todas
+          </button>
+          @for (v of notasChips; track v) {
+            <button
+              type="button"
+              class="nota-chip"
+              [class.activo]="notaMin() === v"
+              [disabled]="!notasDisponibles() || v > notaMax()"
+              (click)="setNota(v)"
+              [attr.aria-label]="'Nota ' + v + ' o más'"
+            >
+              {{ v }}+
+            </button>
+          }
+        </div>
+        @if (!notasDisponibles()) {
+          <span class="filter-empty">Sin notas en este catálogo</span>
+        }
+      </div>
+      <div class="filter">
+        <label class="filter-label" for="f-orden">Ordenar por</label>
+        <select
+          id="f-orden"
+          name="orden"
+          class="filter-select"
+          [ngModel]="orden()"
+          (ngModelChange)="setOrden($event)"
+        >
+          @for (o of hayOrdenes; track o.valor) {
+            <option [value]="o.valor">{{ o.etiqueta }}</option>
+          }
+        </select>
+      </div>
+      <button type="button" class="btn small" (click)="clearFilters()" [disabled]="!hasFilters()">
+        Quitar filtros
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <main class="catalog" id="catalogo" aria-labelledby="catalogo-titulo">
+    <h2 id="catalogo-titulo" class="sr-only">Catálogo de películas</h2>
+    <div class="statusbar" role="status" aria-live="polite">
+      @if (isLoading()) {
+        <p class="status" aria-busy="true">Cargando películas…</p>
+      } @else if (searchError()) {
+        <p class="status error" role="alert">{{ searchError() }}</p>
+      } @else if (activeQuery()) {
+        <p class="status">
+          {{ movies().length }} de {{ totalResults() }} resultados para <strong>"{{ activeQuery() }}"</strong>
+        </p>
+      } @else if (hasFilters()) {
+        <p class="status">Catálogo · {{ movies().length }} de {{ totalResults() }} películas con tus filtros</p>
+      } @else {
+        <p class="status">Tendencias · {{ movies().length }} de {{ totalResults() }} películas populares</p>
+      }
+    </div>
+
+    @if (!isLoading() && !searchError() && movies().length === 0) {
+      <p class="empty">Sin resultados. Prueba con otro título o cambia los filtros.</p>
+    }
+
+    <ul class="grid">
+      @for (movie of movies(); track movie.id) {
+        <li>
+          <button
+            type="button"
+            class="card"
+            [class.active]="movie.id === selectedId()"
+            [attr.aria-expanded]="movie.id === selectedId()"
+            aria-controls="detail-panel"
+            [attr.aria-label]="'Ver detalle de ' + movie.title + ', ' + getYear(movie.release_date) + ', nota ' + formatVote(movie.vote_average)"
+            (click)="selectMovie(movie, $any($event).currentTarget)"
+          >
+            <span class="poster">
+              @if (movie.poster_path) {
+                <img
+                  [src]="getPosterUrl(movie.poster_path)"
+                  [alt]="'Póster de ' + movie.title"
+                  loading="lazy"
+                  width="500"
+                  height="750"
+                />
+              } @else {
+                <span class="no-poster" aria-hidden="true">Sin póster</span>
+              }
+              <span class="rating {{ ratingClass(movie.vote_average) }}" aria-hidden="true">
+                {{ formatVote(movie.vote_average) }}
+              </span>
+              <span class="cta" aria-hidden="true">Ver detalle</span>
+            </span>
+            <span class="card-body">
+              <span class="card-title">{{ movie.title }}</span>
+              <span class="meta">{{ getYear(movie.release_date) }} · {{ movie.vote_count ?? 0 }} votos</span>
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+
+    @if (!isLoading() && !searchError() && currentPage() < totalPages()) {
+      <div class="more-results">
+        <button
+          type="button"
+          class="btn primary"
+          (click)="loadMore()"
+          [disabled]="loadingMore()"
+          [attr.aria-busy]="loadingMore()"
+        >
+          @if (loadingMore()) {
+            Cargando…
+          } @else if (activeQuery()) {
+            Más resultados · página {{ currentPage() + 1 }} de {{ totalPages() }}
+          } @else {
+            Más películas · página {{ currentPage() + 1 }} de {{ totalPages() }}
+          }
+        </button>
+      </div>
+    }
+  </main>
+
+  <aside
+    id="detail-panel"
+    class="detail"
+    [class.open]="!!selected()"
+    role="complementary"
+    aria-labelledby="detail-title"
+  >
+    @if (selected(); as sel) {
+      <button type="button" class="close" (click)="closeDetail(true)" aria-label="Cerrar panel de detalle">
+        Cerrar panel
+      </button>
+      @if (sel.backdrop_path) {
+        <div class="backdrop-wrap">
+          <img
+            class="backdrop"
+            [src]="getPosterUrl(sel.backdrop_path, 'w780')"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            width="780"
+            height="439"
+          />
+        </div>
+      }
+      <div class="detail-content">
+        <h2 id="detail-title" tabindex="-1">{{ sel.title }}</h2>
+        @if (detailLoading()) {
+          <p class="status" role="status">Cargando detalle completo…</p>
+        }
+        @if (detailError()) {
+          <p class="status error" role="alert">{{ detailError() }}</p>
+        }
+        @if (sel.tagline) {
+          <p class="tagline">"{{ sel.tagline }}"</p>
+        }
+        <p class="meta-row">
+          <span>{{ getYear(sel.release_date) }}</span>
+          @if (sel.runtime) { <span>· {{ sel.runtime }} min</span> }
+          <span class="rating">
+            <span class="sr-only">Nota media: </span>{{ formatVote(sel.vote_average) }}
+          </span>
+          <span class="votes">({{ sel.vote_count }} votos)</span>
+        </p>
+        @if (sel.genres?.length) {
+          <ul class="genres" aria-label="Géneros">
+            @for (g of sel.genres; track g.id) {
+              <li class="chip">{{ g.name }}</li>
+            }
+          </ul>
+        }
+        <h3>Sinopsis</h3>
+        <p class="overview">{{ sel.overview || 'Sin sinopsis disponible.' }}</p>
+        <dl class="facts">
+          <div><dt>Idioma</dt><dd>{{ sel.original_language?.toUpperCase() || '—' }}</dd></div>
+          <div>
+            <dt>Popularidad TMDB
+              <span class="hint" title="Nota compuesta que calcula TMDB con vistas, notas, nº de votos y novedad: sube cuando la película está siendo vista y buscada ahora.">ⓘ</span>
+            </dt>
+            <dd>{{ sel.popularity ? sel.popularity.toFixed(0) : '—' }}</dd>
+          </div>
+          <div><dt>Estado</dt><dd>{{ estadoEs(sel.status) }}</dd></div>
+        </dl>
+      </div>
+    } @else {
+      <div class="detail-empty">
+        <h2 id="detail-title" tabindex="-1">Detalle</h2>
+        <p>Selecciona una película para ver sinopsis, duración, géneros y nota.</p>
+      </div>
+    }
+  </aside>
+</div>
