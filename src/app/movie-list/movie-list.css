@@ -200,7 +200,6 @@ h1 {
 .btn:focus-visible,
 .close:focus-visible,
 .card:focus-visible,
-.nota-chip:focus-visible,
 .filter-select:focus-visible {
   outline: 2px solid var(--acento);
   outline-offset: 2px;
@@ -224,7 +223,7 @@ h1 {
     minmax(168px, 1fr)
     minmax(150px, 1fr)
     minmax(165px, 1fr)
-    minmax(210px, 1.4fr)
+    minmax(150px, 1fr)
     minmax(150px, 1fr)
     auto;
   gap: 0.9rem 1rem;
@@ -274,43 +273,6 @@ h1 {
   font-size: 0.85rem;
 }
 
-/* Chips de valoración: fila que envuelve cuando falta sitio. */
-.chipset {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-}
-
-.nota-chip {
-  min-height: 48px;
-  padding: 0 0.7rem;
-  border-radius: 4px;
-  border: 1px solid var(--borde);
-  background: var(--papel);
-  color: var(--tinta);
-  font-family: inherit;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.nota-chip:hover:not([disabled]) {
-  background: var(--papel-2);
-}
-
-.nota-chip.activo {
-  background: var(--acento);
-  border-color: var(--acento);
-  color: var(--papel);
-}
-
-.nota-chip[disabled] {
-  opacity: 0.35;
-  cursor: not-allowed;
-  border-style: dashed;
-}
-
 .filter-empty {
   font-size: 0.8rem;
   color: var(--acento);
@@ -326,10 +288,6 @@ h1 {
   .filterbar {
     grid-template-columns: 1fr 1fr;
   }
-
-  .filter-nota {
-    grid-column: 1 / -1;
-  }
 }
 
 @media (max-width: 520px) {
@@ -337,13 +295,8 @@ h1 {
     grid-template-columns: 1fr;
   }
 
-  .filter,
-  .filter-nota {
+  .filter {
     width: 100%;
-  }
-
-  .chipset {
-    flex-wrap: wrap;
   }
 }
 

@@ -265,6 +265,51 @@ describe('MovieList', () => {
     http.verify();
   });
 
+  it('should keep the active search when removing filters', () => {
+    cargarArranque(http);
+    component.searchText = 'avatar';
+    component.searchNow();
+    const SEARCH = (req: any) => req.url.includes('/search/movie');
+    http.expectOne(SEARCH).flush({
+      page: 1, results: [
+        { id: 1, title: 'Aventura', poster_path: null, overview: '', release_date: '2009-01-01', vote_average: 7, vote_count: 100, popularity: 50, genre_ids: [12] },
+        { id: 2, title: 'Animación', poster_path: null, overview: '', release_date: '2025-01-01', vote_average: 6, vote_count: 100, popularity: 90, genre_ids: [16] },
+      ], total_pages: 1, total_results: 2,
+    });
+
+    // Género aplicado en cliente: solo queda una.
+    component.setGenero('16');
+    expect(component.resultados().map((m) => m.id)).toEqual([2]);
+
+    // «Quitar filtros» no borra la búsqueda: vuelve el pool entero y
+    // no sale ninguna petición nueva.
+    component.clearFilters();
+    expect(component.activeQuery()).toBe('avatar');
+    expect(component.genreId()).toBe(null);
+    expect(component.resultados().map((m) => m.id)).toEqual([2, 1]);
+    http.verify();
+  });
+
+  it('should search pending text when a filter is applied', () => {
+    cargarArranque(http);
+    // Texto escrito pero sin pulsar «Buscar»: filtrar debe aplicarlo.
+    component.searchText = 'avatar';
+    component.setGenero('12');
+    expect(component.activeQuery()).toBe('avatar');
+    expect(component.genreId()).toBe(12);
+    // La petición va a /search, no al catálogo /discover.
+    http.expectOne((req) => req.url.includes('/search/movie')).flush({
+      page: 1, results: [
+        { id: 1, title: 'Aventura', poster_path: null, overview: '', release_date: '2009-01-01', vote_average: 7, vote_count: 100, popularity: 50, genre_ids: [12] },
+        { id: 2, title: 'Animación', poster_path: null, overview: '', release_date: '2025-01-01', vote_average: 6, vote_count: 100, popularity: 90, genre_ids: [16] },
+      ], total_pages: 1, total_results: 2,
+    });
+    // El género elegido filtra el pool de la búsqueda en cliente.
+    expect(component.modoBusqueda()).toBe(true);
+    expect(component.resultados().map((m) => m.id)).toEqual([1]);
+    http.verify();
+  });
+
   it('should show more client-filtered results before asking for another page', () => {
     cargarArranque(http);
     component.searchText = 'matrix';

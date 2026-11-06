@@ -94,31 +94,21 @@
           <span class="filter-empty">Sin efecto durante una búsqueda</span>
         }
       </div>
-      <div class="filter filter-nota">
-        <span class="filter-label">Valoración mínima</span>
-        <div class="chipset" role="group" aria-label="Valoración mínima">
-          <button
-            type="button"
-            class="nota-chip"
-            [class.activo]="notaMin() === null"
-            [disabled]="!notasDisponibles()"
-            (click)="setNota(null)"
-          >
-            Todas
-          </button>
-          @for (v of notasChips; track v) {
-            <button
-              type="button"
-              class="nota-chip"
-              [class.activo]="notaMin() === v"
-              [disabled]="!notasDisponibles() || v > notaMax()"
-              (click)="setNota(v)"
-              [attr.aria-label]="'Nota ' + v + ' o más'"
-            >
-              {{ v }}+
-            </button>
+      <div class="filter">
+        <label class="filter-label" for="f-nota">Valoración mínima</label>
+        <select
+          id="f-nota"
+          name="nota"
+          class="filter-select"
+          [disabled]="!notasDisponibles()"
+          [ngModel]="notaMin() ?? ''"
+          (ngModelChange)="setNotaDesdeSelect($event)"
+        >
+          <option value="">Cualquier nota</option>
+          @for (v of notasOpciones; track v) {
+            <option [value]="v" [disabled]="v > notaMax()">{{ v }}+</option>
           }
-        </div>
+        </select>
         @if (!notasDisponibles()) {
           <span class="filter-empty">Sin notas en este catálogo</span>
         }

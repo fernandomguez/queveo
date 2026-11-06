@@ -39,11 +39,9 @@ export class MovieList implements OnInit, OnDestroy {
     'Canceled': 'Cancelada',
   };
 
-  // Chips del filtro de valoración; los que superen la nota máxima
-  // disponible salen deshabilitados.
-  notasChips = [5, 6, 7, 8, 9];
-
-  hayDuraciones: Duracion[] = [
+  // Opciones del select de valoración; las que superan la nota máxima
+  // disponible salen deshabilitadas.
+  notasOpciones = [5, 6, 7, 8, 9];  hayDuraciones: Duracion[] = [
     { valor: 'any', etiqueta: 'Cualquier duración' },
     { valor: '<90', etiqueta: 'Menos de 90 min' },
     { valor: '90-150', etiqueta: '90 – 150 min' },
@@ -76,8 +74,8 @@ export class MovieList implements OnInit, OnDestroy {
   genres = signal<Genre[]>([]);
   genreId = signal<number | null>(null);
   duracion = signal<string>('any');
-  // Nota mínima en número (null = «cualquier nota»). El slider va de
-  // 1 a notaMax, que TMDB actualiza según lo que existe de verdad.
+  // Nota mínima en número (null = «cualquier nota»). El select ofrece
+  // desde 5 hasta notaMax, que se ajusta a lo que existe de verdad.
   notaMin = signal<number | null>(null);
   notaMax = signal<number>(10);
   notasDisponibles = signal<boolean>(true);
@@ -187,14 +185,19 @@ export class MovieList implements OnInit, OnDestroy {
   }
 
   // Cambio de género: con búsqueda activa el género se aplica al pool de
-  // resultados en cliente (computed) sin pedir nada; en catálogo, recarga
-  // página 1 con el valor nuevo contra /discover.
+  // resultados en cliente (computed) sin pedir nada; con texto escrito pero
+  // sin buscar, se busca ese texto; en catálogo, recarga página 1 con el
+  // valor nuevo contra /discover.
   setGenero(value: string): void {
     if (this.generoOriginal === value) return;
     this.generoOriginal = value;
     const n = Number(value);
     this.genreId.set(Number.isFinite(n) && n > 0 ? n : null);
     if (this.modoBusqueda()) return;
+    if (this.buscaPendiente()) {
+      this.searchNow();
+      return;
+    }
     this.load();
     this.probarNotaMax();
   }
@@ -204,18 +207,31 @@ export class MovieList implements OnInit, OnDestroy {
     this.duracionOriginal = value;
     this.duracion.set(value);
     if (this.modoBusqueda()) return;
+    if (this.buscaPendiente()) {
+      this.searchNow();
+      return;
+    }
     this.load();
     this.probarNotaMax();
   }
 
-  // Valoración mínima por botones: null = cualquier nota. Si alguien
-  // pide una nota mayor que la máxima disponible con estos filtros, no
-  // cambia nada (el chip está deshabilitado y el código también lo ignora).
+  // El <select> trabaja con cadenas: '' es «cualquier nota».
+  setNotaDesdeSelect(value: string): void {
+    this.setNota(value === '' ? null : Number(value));
+  }
+
+  // Valoración mínima por select: null = cualquier nota. Si alguien pide
+  // una nota mayor que la máxima disponible con estos filtros, no cambia
+  // nada (la opción está deshabilitada y el código también lo ignora).
   setNota(valor: number | null): void {
     if (valor !== null && valor > this.notaMax()) return;
     if ((this.notaMin() ?? null) === valor) return;
     this.notaMin.set(valor);
     if (this.modoBusqueda()) return;
+    if (this.buscaPendiente()) {
+      this.searchNow();
+      return;
+    }
     this.load();
   }
 
@@ -278,6 +294,10 @@ export class MovieList implements OnInit, OnDestroy {
     this.ordenOriginal = value;
     this.orden.set(value);
     if (this.modoBusqueda()) return;
+    if (this.buscaPendiente()) {
+      this.searchNow();
+      return;
+    }
     this.load();
   }
 
@@ -290,12 +310,18 @@ export class MovieList implements OnInit, OnDestroy {
     this.regionOriginal = value;
     this.region.set(value);
     if (this.modoBusqueda()) return;
+    if (this.buscaPendiente()) {
+      this.searchNow();
+      return;
+    }
     this.load();
     this.probarNotaMax();
   }
 
-  // Vuelta al catálogo completo: sin ningún filtro y con la región por
-  // defecto (España).
+  // Vuelta a los valores por defecto: sin ningún filtro y con la región
+  // de España. Con una búsqueda abierta solo se quitan los filtros: el
+  // pool de la búsqueda se conserva (el computed vuelve a enseñarlo entero
+  // al instante) y ni el texto ni los resultados se pierden.
   clearFilters(): void {
     this.generoOriginal = '';
     this.duracionOriginal = 'any';
@@ -306,6 +332,7 @@ export class MovieList implements OnInit, OnDestroy {
     this.notaMin.set(null);
     this.orden.set('popularity.desc');
     this.region.set('ES');
+    if (this.modoBusqueda()) return;
     this.searchText = '';
     this.load();
     this.probarNotaMax();
@@ -392,15 +419,12 @@ export class MovieList implements OnInit, OnDestroy {
     this.load();
   }
 
-  // Número en español: coma y sin decimales cuando quedan enteros.
-  private formatNotaParaEs(n: number): string {
-    return Number.isInteger(n) ? n.toFixed(0) : n.toFixed(1).replace('.', ',');
-  }
-
-  // El extremo derecho del sondeo, también con coma española (solo se usa
-  // en los mensajes de estado del grupo de chips).
-  notaMaxEtiqueta(): string {
-    return this.formatNotaParaEs(this.notaMax());
+  // ¿Hay texto escrito que todavía no se ha buscado? Tocar cualquier
+  // filtro con ese texto pendiente debe aplicar la búsqueda (texto +
+  // filtro), no volver al catálogo ignorando lo escrito.
+  private buscaPendiente(): boolean {
+    const q = this.searchText.trim();
+    return q.length >= 2 && q !== this.activeQuery();
   }
 
   // Traduce el estado del estreno que TMDB manda en inglés.
