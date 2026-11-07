@@ -4,4 +4,6 @@ export const environment = {
   tmdbBaseUrl: 'https://api.themoviedb.org/3',
   tmdbImageBaseUrl: 'https://image.tmdb.org/t/p',
   tmdbLanguage: 'es-ES',
+  // País cuyas fechas de estreno cuentan para el catálogo.
+  tmdbRegion: 'ES',
 };
