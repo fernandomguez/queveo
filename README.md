@@ -20,6 +20,17 @@ npm run test     # Vitest
 npm run build    # producción en dist/apiPelis/browser
 ```
 
+## Despliegue
+
+La web se publica en GitHub Pages desde la rama `gh-pages`: https://fernandomguez.github.io/queveo/
+
+```bash
+git switch main
+npm run deploy -- "descripción del cambio"
+```
+
+Compila con la ruta base `/queveo/`, copia el resultado a `gh-pages` y la sube. Necesita tu `src/environments/environment.ts` con la clave de TMDB y todo comiteado (ejecútalo en Git Bash).
+
 ## Estructura
 
 | Ruta | Contenido |
