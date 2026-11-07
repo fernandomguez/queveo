@@ -1,10 +1,9 @@
 <button
   type="button"
   class="c-tarjeta__boton"
-  [attr.aria-expanded]="activa()"
-  aria-controls="detail-panel"
+  aria-haspopup="dialog"
   [attr.aria-label]="etiquetaAria()"
-  (click)="alPulsar($event)"
+  (click)="alPulsar()"
 >
   <span class="c-tarjeta__poster">
     @if (pelicula().poster_path) {

@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { Movie } from '../../core/models/movie.model';
 import { CatalogoStore } from '../../core/state/catalogo.store';
-import { AperturaDetalle, TarjetaPelicula } from '../tarjeta-pelicula/tarjeta-pelicula';
+import { TarjetaPelicula } from '../tarjeta-pelicula/tarjeta-pelicula';
 
 // Estado del listado (cargando, error, resultados), rejilla de tarjetas y
 // botón «Más resultados». Lee del store y avisa al padre cuando se abre una ficha.
@@ -14,5 +15,5 @@ import { AperturaDetalle, TarjetaPelicula } from '../tarjeta-pelicula/tarjeta-pe
 export class ListaPeliculas {
   protected readonly store = inject(CatalogoStore);
 
-  readonly abrir = output<AperturaDetalle>();
+  readonly abrir = output<Movie>();
 }

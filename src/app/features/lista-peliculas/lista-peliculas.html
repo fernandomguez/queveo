@@ -30,7 +30,6 @@
     <li>
       <app-tarjeta-pelicula
         [pelicula]="pelicula"
-        [activa]="pelicula.id === store.seleccionada()?.id"
         (abrir)="abrir.emit($event)"
       />
     </li>

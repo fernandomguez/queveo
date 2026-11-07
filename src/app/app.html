@@ -32,13 +32,13 @@
 <div class="l-pagina">
   <main id="catalogo" aria-labelledby="catalogo-titulo">
     <h2 id="catalogo-titulo" class="u-solo-lectores">Catálogo de películas</h2>
-    <app-lista-peliculas (abrir)="abrirDetalle($event)" />
+    <app-lista-peliculas (abrir)="store.seleccionar($event)" />
   </main>
-
-  <app-detalle-pelicula
-    [pelicula]="store.detalle()"
-    [cargando]="store.cargandoDetalle()"
-    [error]="store.errorDetalle()"
-    (cerrar)="cerrarDetalle()"
-  />
 </div>
+
+<app-detalle-pelicula
+  [pelicula]="store.detalle()"
+  [cargando]="store.cargandoDetalle()"
+  [error]="store.errorDetalle()"
+  (cerrar)="store.cerrarDetalle()"
+/>
