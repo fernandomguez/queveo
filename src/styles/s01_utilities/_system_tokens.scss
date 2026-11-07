@@ -31,8 +31,9 @@ $paddings: (0px, 4px, 6px, 8px, 10px, 12px, 14px, 16px, 20px, 24px, 28px, 32px, 
 $border-radius: (1px, 2px, 4px, 6px);
 $widths: (0px, 1px, 2px, 4px);
 
-// Alturas, anchos de columna y otras medidas, en orden ascendente.
-$medidas: (26px, 32px, 42px, 44px, 48px, 56px, 64px, 160px, 170px, 240px, 390px, 1380px);
+// Alturas, anchos de columna y otras medidas. Los valores nuevos se añaden al final
+// para no mover los índices de los que ya se usan.
+$medidas: (26px, 32px, 42px, 44px, 48px, 56px, 64px, 160px, 170px, 240px, 390px, 1380px, 720px);
 
 $duraciones: (150ms, 220ms, 5s, 6s);
 

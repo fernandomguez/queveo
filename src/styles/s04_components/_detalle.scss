@@ -1,9 +1,10 @@
 @use "../s01_utilities" as *;
 
-// Panel de detalle: a la derecha en escritorio y hoja inferior en móvil.
+// Pop up con la ficha de la película: un <dialog> centrado sobre un velo oscuro.
 .c-detalle {
   // Tokens de diseño
   --detalle-color-fondo: var(--mlt-sys-color-base-2);
+  --detalle-color-velo: var(--mlt-sys-color-base-1);
   --detalle-color-borde: var(--mlt-sys-color-base-6);
   --detalle-color-linea: var(--mlt-sys-color-base-4);
   --detalle-color-texto: var(--mlt-sys-color-base-9);
@@ -11,95 +12,78 @@
   --detalle-color-acento: var(--mlt-sys-color-principal-5);
   --detalle-font-titulos: var(--mlt-sys-font-titulos);
   --detalle-width-1: var(--mlt-sys-width-1); // 1px
+  --detalle-width-2: var(--mlt-sys-width-2); // 2px
   --detalle-border-radius-3: var(--mlt-sys-border-radius-3); // 4px
-  --detalle-border-radius-4: var(--mlt-sys-border-radius-4); // 6px
-  --detalle-margin-7: var(--mlt-sys-margin-7); // 16px
-  --detalle-margin-11: var(--mlt-sys-margin-11); // 32px
-  --detalle-sombra-1: var(--mlt-sys-sombra-1); // sombra del panel
-  --detalle-duracion-2: var(--mlt-sys-duracion-2); // 220ms
-  --detalle-desplazamiento-cerrado: translateY(105%);
-  --detalle-medida-4: var(--mlt-sys-medida-4); // 44px
-  --detalle-padding-7: var(--mlt-sys-padding-7); // 16px
-  --detalle-font-size-3: var(--mlt-sys-font-size-3); // 14px
-  --detalle-padding-8: var(--mlt-sys-padding-8); // 20px
-  --detalle-padding-9: var(--mlt-sys-padding-9); // 24px
-  --detalle-padding-11: var(--mlt-sys-padding-11); // 32px
-  --detalle-font-size-8: var(--mlt-sys-font-size-8); // 24px
-  --detalle-font-size-6: var(--mlt-sys-font-size-6); // 17px
-  --detalle-font-weight-3: var(--mlt-sys-font-weight-3); // 600
-  --detalle-font-weight-2: var(--mlt-sys-font-weight-2); // 500
+  --detalle-margin-0: var(--mlt-sys-margin-0); // 0px
+  --detalle-margin-2: var(--mlt-sys-margin-2); // 6px
   --detalle-margin-3: var(--mlt-sys-margin-3); // 8px
   --detalle-margin-4: var(--mlt-sys-margin-4); // 10px
-  --detalle-margin-8: var(--mlt-sys-margin-8); // 20px
-  --detalle-margin-2: var(--mlt-sys-margin-2); // 6px
   --detalle-margin-5: var(--mlt-sys-margin-5); // 12px
-  --detalle-padding-3: var(--mlt-sys-padding-3); // 8px
-  --detalle-padding-6: var(--mlt-sys-padding-6); // 14px
-  --detalle-width-2: var(--mlt-sys-width-2); // 2px
-  --detalle-margin-0: var(--mlt-sys-margin-0); // 0px
+  --detalle-margin-7: var(--mlt-sys-margin-7); // 16px
+  --detalle-margin-8: var(--mlt-sys-margin-8); // 20px
   --detalle-padding-0: var(--mlt-sys-padding-0); // 0px
-
-  // Estado privado: por defecto, panel cerrado (solo se nota en móvil)
-  --detalle-privateState-desplazamiento: var(--detalle-desplazamiento-cerrado);
+  --detalle-padding-3: var(--mlt-sys-padding-3); // 8px
+  --detalle-padding-5: var(--mlt-sys-padding-5); // 12px
+  --detalle-padding-6: var(--mlt-sys-padding-6); // 14px
+  --detalle-padding-8: var(--mlt-sys-padding-8); // 20px
+  --detalle-padding-9: var(--mlt-sys-padding-9); // 24px
+  --detalle-padding-12: var(--mlt-sys-padding-12); // 48px
+  --detalle-font-size-3: var(--mlt-sys-font-size-3); // 14px
+  --detalle-font-size-6: var(--mlt-sys-font-size-6); // 17px
+  --detalle-font-size-8: var(--mlt-sys-font-size-8); // 24px
+  --detalle-font-weight-2: var(--mlt-sys-font-weight-2); // 500
+  --detalle-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+  --detalle-medida-1: var(--mlt-sys-medida-1); // 26px
+  --detalle-medida-4: var(--mlt-sys-medida-4); // 44px
+  --detalle-medida-13: var(--mlt-sys-medida-13); // 720px
 
   // Propiedades CSS
-  position: sticky;
-  top: var(--detalle-margin-7);
-  display: block;
-  max-height: calc(100vh - var(--detalle-margin-11));
+  width: calc(100% - 2 * var(--detalle-margin-7));
+  max-width: var(--detalle-medida-13);
+  max-height: 90dvh;
+  margin: auto;
+  padding: var(--detalle-padding-0);
   border: var(--detalle-width-1) solid var(--detalle-color-borde);
   border-radius: var(--detalle-border-radius-3);
   background-color: var(--detalle-color-fondo);
-  overflow: hidden;
+  color: var(--detalle-color-texto);
+  overflow-x: hidden;
   overflow-y: auto;
-  // El scroll al llegar al final del panel no se pasa a la página de detrás
+  // El scroll al llegar al final del pop up no se pasa a la página de detrás
   overscroll-behavior: contain;
 
-  @include hasta($breakpoint-tablet) {
-    position: fixed;
-    top: auto;
-    left: var(--detalle-margin-0);
-    right: var(--detalle-margin-0);
-    bottom: var(--detalle-margin-0);
-    z-index: 20;
-    max-height: 82vh;
-    // En móvil, dvh descuenta la barra del navegador y el final del panel no queda tapado
-    max-height: 82dvh;
-    border-bottom: none;
-    border-radius: var(--detalle-border-radius-4) var(--detalle-border-radius-4) 0 0;
-    box-shadow: var(--detalle-sombra-1);
-    transform: var(--detalle-privateState-desplazamiento);
-    transition: transform var(--detalle-duracion-2) ease;
+  // Velo oscuro que cubre la página (pulsarlo cierra el pop up)
+  &::backdrop {
+    background-color: color-mix(in srgb, var(--detalle-color-velo) 75%, transparent);
   }
 
-  // Modificador: con una película elegida el panel se muestra
-  &--estado-abierto {
-    --detalle-privateState-desplazamiento: none;
-  }
-
-  &__vacio {
-    padding: var(--detalle-padding-11) var(--detalle-padding-9);
-    color: var(--detalle-color-texto-suave);
-  }
-
-  &__titulo-vacio {
-    font-family: var(--detalle-font-titulos);
+  // Barra pegada arriba con la X: sin altura propia, flota sobre el contenido
+  // y sigue visible aunque se haga scroll en la sinopsis.
+  &__barra {
+    position: sticky;
+    top: var(--detalle-margin-0);
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    padding: var(--detalle-padding-5);
+    margin-bottom: calc(-1 * (var(--detalle-medida-4) + 2 * var(--detalle-padding-5)));
+    pointer-events: none;
   }
 
   &__cerrar {
+    display: grid;
+    place-items: center;
+    width: var(--detalle-medida-4);
     height: var(--detalle-medida-4);
-    margin: var(--detalle-margin-7) var(--detalle-margin-7) var(--detalle-margin-0);
-    padding: var(--detalle-padding-0) var(--detalle-padding-7);
+    padding: var(--detalle-padding-0);
     border: var(--detalle-width-1) solid var(--detalle-color-borde);
-    border-radius: var(--detalle-border-radius-3);
+    border-radius: 50%;
     background-color: var(--detalle-color-fondo);
     color: var(--detalle-color-texto);
-    font-family: inherit;
-    font-size: var(--detalle-font-size-3);
-    font-weight: var(--detalle-font-weight-3);
     cursor: pointer;
+    pointer-events: auto;
 
-    &:hover:not([disabled]) {
+    &:hover {
       border-color: var(--detalle-color-acento);
       background-color: var(--detalle-color-acento);
       color: var(--detalle-color-fondo);
@@ -111,8 +95,16 @@
     }
   }
 
+  &__cerrar-icono {
+    width: var(--detalle-medida-1);
+    height: var(--detalle-medida-1);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
   &__fondo {
-    margin-top: var(--detalle-margin-7);
     border-bottom: var(--detalle-width-1) solid var(--detalle-color-linea);
   }
 
@@ -124,25 +116,17 @@
   }
 
   &__contenido {
-    padding: var(--detalle-padding-8) var(--detalle-padding-9)
-      var(--detalle-padding-9);
+    padding: var(--detalle-padding-8) var(--detalle-padding-9) var(--detalle-padding-9);
   }
 
+  // El padding derecho deja sitio a la X cuando la película no tiene imagen de fondo
   &__titulo {
     margin: var(--detalle-margin-0) var(--detalle-margin-0) var(--detalle-margin-2);
+    padding-right: var(--detalle-padding-12);
     font-family: var(--detalle-font-titulos);
     font-size: var(--detalle-font-size-8);
     font-weight: var(--detalle-font-weight-3);
     line-height: 1.2;
-
-    &:focus {
-      outline: none;
-    }
-
-    &:focus-visible {
-      outline: var(--detalle-width-2) solid var(--detalle-color-acento);
-      outline-offset: var(--detalle-width-2);
-    }
   }
 
   &__subtitulo {
@@ -239,11 +223,9 @@
   }
 }
 
-// Con el panel abierto en pantallas pequeñas la página de detrás no hace scroll:
-// el único scroll posible es el del panel.
-@include hasta($breakpoint-tablet) {
-  html:has(.c-detalle--estado-abierto),
-  body:has(.c-detalle--estado-abierto) {
-    overflow: hidden;
-  }
+// Con el pop up abierto la página de detrás no hace scroll en ningún tamaño de pantalla:
+// el único scroll posible es el del pop up.
+html:has(.c-detalle[open]),
+body:has(.c-detalle[open]) {
+  overflow: hidden;
 }

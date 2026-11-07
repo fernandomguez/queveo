@@ -1,30 +1,14 @@
-@use "../s01_utilities" as *;
-
-// Maqueta de la página: catálogo a la izquierda y panel de detalle a la derecha.
+// Maqueta de la página: el catálogo ocupa todo el ancho, centrado.
 .l-pagina {
   // Tokens de diseño
   --pagina-medida-12: var(--mlt-sys-medida-12); // 1380px
-  --pagina-medida-11: var(--mlt-sys-medida-11); // 390px
   --pagina-padding-10: var(--mlt-sys-padding-10); // 28px
   --pagina-padding-9: var(--mlt-sys-padding-9); // 24px
   --pagina-padding-12: var(--mlt-sys-padding-12); // 48px
-  --pagina-margin-11: var(--mlt-sys-margin-11); // 32px
   --pagina-margin-0: var(--mlt-sys-margin-0); // 0px
 
-  // Estado privado: por defecto, dos columnas
-  --pagina-privateState-columnas: minmax(0, 1fr) var(--pagina-medida-11);
-
   // Propiedades CSS
-  display: grid;
-  grid-template-columns: var(--pagina-privateState-columnas);
-  gap: var(--pagina-margin-11);
-  align-items: start;
   max-width: var(--pagina-medida-12);
   margin: var(--pagina-margin-0) auto;
   padding: var(--pagina-padding-10) var(--pagina-padding-9) var(--pagina-padding-12);
-
-  // En pantallas pequeñas el detalle sale del flujo y queda una sola columna
-  @include hasta($breakpoint-tablet) {
-    --pagina-privateState-columnas: 1fr;
-  }
 }
