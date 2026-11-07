@@ -5,7 +5,7 @@
   --tarjeta-color-poster: var(--mlt-sys-color-base-3);
   --tarjeta-color-borde: var(--mlt-sys-color-base-4);
   --tarjeta-color-hover: var(--mlt-sys-color-base-9);
-  --tarjeta-color-activa: var(--mlt-sys-color-principal-5);
+  --tarjeta-color-foco: var(--mlt-sys-color-principal-5);
   --tarjeta-color-texto-suave: var(--mlt-sys-color-base-8);
   --tarjeta-color-lupa-fondo: var(--mlt-sys-color-base-9);
   --tarjeta-color-lupa-icono: var(--mlt-sys-color-base-2);
@@ -29,28 +29,15 @@
   --tarjeta-medida-3: var(--mlt-sys-medida-3); // 42px
   --tarjeta-padding-0: var(--mlt-sys-padding-0); // 0px
 
-  // Estado privado: por defecto, tarjeta normal
-  --tarjeta-privateState-borde: var(--tarjeta-color-borde);
-  --tarjeta-privateState-borde-hover: var(--tarjeta-color-hover);
-  --tarjeta-privateState-sombra: none;
-
   // Propiedades CSS
   display: block;
-
-  // Modificador: la tarjeta abierta en el panel de detalle
-  &--estado-activa {
-    --tarjeta-privateState-borde: var(--tarjeta-color-activa);
-    --tarjeta-privateState-borde-hover: var(--tarjeta-color-activa);
-    --tarjeta-privateState-sombra: inset 0 0 0 var(--tarjeta-width-1) var(--tarjeta-color-activa);
-  }
 
   &__boton {
     display: block;
     width: 100%;
     padding: var(--tarjeta-padding-0);
-    border: var(--tarjeta-width-1) solid var(--tarjeta-privateState-borde);
+    border: var(--tarjeta-width-1) solid var(--tarjeta-color-borde);
     border-radius: var(--tarjeta-border-radius-3);
-    box-shadow: var(--tarjeta-privateState-sombra);
     background-color: var(--tarjeta-color-fondo);
     color: inherit;
     font: inherit;
@@ -60,11 +47,11 @@
     transition: border-color var(--tarjeta-duracion-1) ease;
 
     &:hover {
-      border-color: var(--tarjeta-privateState-borde-hover);
+      border-color: var(--tarjeta-color-hover);
     }
 
     &:focus-visible {
-      outline: var(--tarjeta-width-2) solid var(--tarjeta-color-activa);
+      outline: var(--tarjeta-width-2) solid var(--tarjeta-color-foco);
       outline-offset: var(--tarjeta-width-2);
     }
   }

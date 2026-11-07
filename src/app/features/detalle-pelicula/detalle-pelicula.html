@@ -1,75 +1,83 @@
-@if (pelicula(); as sel) {
-  <button type="button" class="c-detalle__cerrar" (click)="cerrar.emit()" aria-label="Cerrar panel de detalle">
-    Cerrar panel
-  </button>
-  @if (sel.backdrop_path) {
-    <div class="c-detalle__fondo">
-      <img
-        class="c-detalle__imagen"
-        [src]="imagenFondo()"
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-        width="780"
-        height="439"
-      />
+<dialog
+  #dialogo
+  class="c-detalle"
+  aria-labelledby="detail-title"
+  (close)="alCerrarDialogo()"
+  (click)="alPulsarDialogo($event)"
+>
+  <div class="c-detalle__barra">
+    <button type="button" class="c-detalle__cerrar" (click)="cerrar.emit()" aria-label="Cerrar">
+      <svg class="c-detalle__cerrar-icono" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 7 L17 17 M17 7 L7 17" />
+      </svg>
+    </button>
+  </div>
+
+  @if (pelicula(); as sel) {
+    @if (sel.backdrop_path) {
+      <div class="c-detalle__fondo">
+        <img
+          class="c-detalle__imagen"
+          [src]="imagenFondo()"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          width="780"
+          height="439"
+        />
+      </div>
+    }
+    <div class="c-detalle__contenido">
+      <h2 id="detail-title" class="c-detalle__titulo">{{ sel.title }}</h2>
+      @if (cargando()) {
+        <p class="c-detalle__estado" role="status">Cargando detalle completo…</p>
+      }
+      @if (error()) {
+        <p class="c-detalle__error" role="alert">{{ error() }}</p>
+      }
+      @if (sel.tagline) {
+        <p class="c-detalle__lema">"{{ sel.tagline }}"</p>
+      }
+      <p class="c-detalle__datos">
+        <span>{{ anio() }}</span>
+        @if (sel.runtime) {
+          <span>· {{ sel.runtime }} min</span>
+        }
+        <span class="c-nota">
+          <span class="u-solo-lectores">Nota media: </span>{{ nota() }}
+        </span>
+        <span class="c-detalle__votos">({{ sel.vote_count }} votos)</span>
+      </p>
+      @if (sel.genres.length) {
+        <ul class="c-detalle__generos" aria-label="Géneros">
+          @for (g of sel.genres; track g.id) {
+            <li>{{ g.name }}</li>
+          }
+        </ul>
+      }
+      <h3 class="c-detalle__subtitulo">Sinopsis</h3>
+      <p class="c-detalle__sinopsis">{{ sel.overview || 'Sin sinopsis disponible.' }}</p>
+      <dl class="c-detalle__ficha">
+        <div>
+          <dt>Idioma original</dt>
+          <dd>{{ idioma() }}</dd>
+        </div>
+        <div>
+          <dt>
+            Popularidad TMDB
+            <span
+              class="c-detalle__ayuda"
+              title="Nota compuesta que calcula TMDB con vistas, notas, nº de votos y novedad: sube cuando la película está siendo vista y buscada ahora."
+              >ⓘ</span
+            >
+          </dt>
+          <dd>{{ popularidad() }}</dd>
+        </div>
+        <div>
+          <dt>Estado</dt>
+          <dd>{{ estado() }}</dd>
+        </div>
+      </dl>
     </div>
   }
-  <div class="c-detalle__contenido">
-    <h2 #titulo id="detail-title" class="c-detalle__titulo" tabindex="-1">{{ sel.title }}</h2>
-    @if (cargando()) {
-      <p class="c-detalle__estado" role="status">Cargando detalle completo…</p>
-    }
-    @if (error()) {
-      <p class="c-detalle__error" role="alert">{{ error() }}</p>
-    }
-    @if (sel.tagline) {
-      <p class="c-detalle__lema">"{{ sel.tagline }}"</p>
-    }
-    <p class="c-detalle__datos">
-      <span>{{ anio() }}</span>
-      @if (sel.runtime) {
-        <span>· {{ sel.runtime }} min</span>
-      }
-      <span class="c-nota">
-        <span class="u-solo-lectores">Nota media: </span>{{ nota() }}
-      </span>
-      <span class="c-detalle__votos">({{ sel.vote_count }} votos)</span>
-    </p>
-    @if (sel.genres.length) {
-      <ul class="c-detalle__generos" aria-label="Géneros">
-        @for (g of sel.genres; track g.id) {
-          <li>{{ g.name }}</li>
-        }
-      </ul>
-    }
-    <h3 class="c-detalle__subtitulo">Sinopsis</h3>
-    <p class="c-detalle__sinopsis">{{ sel.overview || 'Sin sinopsis disponible.' }}</p>
-    <dl class="c-detalle__ficha">
-      <div>
-        <dt>Idioma original</dt>
-        <dd>{{ idioma() }}</dd>
-      </div>
-      <div>
-        <dt>
-          Popularidad TMDB
-          <span
-            class="c-detalle__ayuda"
-            title="Nota compuesta que calcula TMDB con vistas, notas, nº de votos y novedad: sube cuando la película está siendo vista y buscada ahora."
-            >ⓘ</span
-          >
-        </dt>
-        <dd>{{ popularidad() }}</dd>
-      </div>
-      <div>
-        <dt>Estado</dt>
-        <dd>{{ estado() }}</dd>
-      </div>
-    </dl>
-  </div>
-} @else {
-  <div class="c-detalle__vacio">
-    <h2 #titulo id="detail-title" class="c-detalle__titulo-vacio" tabindex="-1">Detalle</h2>
-    <p>Selecciona una película para ver sinopsis, duración, géneros y nota.</p>
-  </div>
-}
+</dialog>
