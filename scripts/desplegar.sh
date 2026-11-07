@@ -27,7 +27,7 @@ sed -i 's#url(/fonts/#url(fonts/#g' "$salida"/styles-*.css
 git fetch -q origin gh-pages
 temporal="$(mktemp -d)"
 git worktree add -q --detach "$temporal" origin/gh-pages
-trap 'git worktree remove --force "$temporal"' EXIT
+trap 'git worktree remove --force "$temporal" 2>/dev/null || true; git worktree prune 2>/dev/null || true' EXIT
 
 find "$temporal" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
 cp -r "$salida"/. "$temporal"/
