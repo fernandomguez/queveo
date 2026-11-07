@@ -52,6 +52,8 @@
   background-color: var(--detalle-color-fondo);
   overflow: hidden;
   overflow-y: auto;
+  // El scroll al llegar al final del panel no se pasa a la página de detrás
+  overscroll-behavior: contain;
 
   @include hasta($breakpoint-tablet) {
     position: fixed;
@@ -61,6 +63,8 @@
     bottom: var(--detalle-margin-0);
     z-index: 20;
     max-height: 82vh;
+    // En móvil, dvh descuenta la barra del navegador y el final del panel no queda tapado
+    max-height: 82dvh;
     border-bottom: none;
     border-radius: var(--detalle-border-radius-4) var(--detalle-border-radius-4) 0 0;
     box-shadow: var(--detalle-sombra-1);
@@ -232,5 +236,14 @@
     font-size: var(--detalle-font-size-3);
     opacity: 0.75;
     cursor: help;
+  }
+}
+
+// Con el panel abierto en pantallas pequeñas la página de detrás no hace scroll:
+// el único scroll posible es el del panel.
+@include hasta($breakpoint-tablet) {
+  html:has(.c-detalle--estado-abierto),
+  body:has(.c-detalle--estado-abierto) {
+    overflow: hidden;
   }
 }
