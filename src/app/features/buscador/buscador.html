@@ -1,0 +1,19 @@
+<form (submit)="alEnviar($event)" role="search" aria-label="Buscar películas">
+  <label class="c-buscador__etiqueta" for="q">Buscar película por título</label>
+  <div class="c-buscador__controles">
+    <input
+      id="q"
+      class="c-buscador__campo"
+      type="search"
+      name="q"
+      [value]="texto()"
+      (input)="alEscribir($event)"
+      placeholder="Avatar, Origen..."
+      autocomplete="off"
+    />
+    <button type="submit" class="c-boton c-boton--funcion-principal">Buscar</button>
+    @if (texto() || hayBusqueda()) {
+      <button type="button" class="c-boton" (click)="limpiar.emit()">Limpiar</button>
+    }
+  </div>
+</form>

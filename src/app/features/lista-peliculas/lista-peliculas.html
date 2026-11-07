@@ -1,0 +1,60 @@
+<div class="c-estado" role="status" aria-live="polite">
+  @if (store.cargando()) {
+    <p class="c-estado__texto" aria-busy="true">Cargando películas…</p>
+  } @else if (store.error()) {
+    <p class="c-estado__error" role="alert">{{ store.error() }}</p>
+  } @else if (store.cargandoMinutos()) {
+    <p class="c-estado__texto" aria-busy="true">Comprobando la duración de los resultados…</p>
+  } @else if (store.consultaActiva()) {
+    <p class="c-estado__texto">
+      {{ store.resultados().length }} de {{ store.totalResultados() }} resultados para
+      <strong class="c-estado__destacado">"{{ store.consultaActiva() }}"</strong>
+    </p>
+  } @else if (store.hayFiltros()) {
+    <p class="c-estado__texto">
+      Catálogo · {{ store.resultadosVisibles().length }} de {{ store.totalResultados() }} películas con tus filtros
+    </p>
+  } @else {
+    <p class="c-estado__texto">
+      Tendencias · {{ store.resultadosVisibles().length }} de {{ store.totalResultados() }} películas populares
+    </p>
+  }
+</div>
+
+@if (!store.cargando() && !store.cargandoMinutos() && !store.error() && store.resultadosVisibles().length === 0) {
+  <p class="c-lista__vacio">Sin resultados. Prueba con otro título o cambia los filtros.</p>
+}
+
+<ul class="c-lista__rejilla">
+  @for (pelicula of store.resultadosVisibles(); track pelicula.id) {
+    <li>
+      <app-tarjeta-pelicula
+        [pelicula]="pelicula"
+        [activa]="pelicula.id === store.seleccionada()?.id"
+        (abrir)="abrir.emit($event)"
+      />
+    </li>
+  }
+</ul>
+
+@if (!store.cargando() && !store.error() && store.hayMas()) {
+  <div>
+    <button
+      type="button"
+      class="c-boton c-boton--funcion-principal"
+      (click)="store.verMas()"
+      [disabled]="store.cargandoMas()"
+      [attr.aria-busy]="store.cargandoMas()"
+    >
+      @if (store.cargandoMas()) {
+        Cargando…
+      } @else if (store.consultaActiva() && store.paginaActual() < store.totalPaginas()) {
+        Más resultados · página {{ store.paginaActual() + 1 }} de {{ store.totalPaginas() }}
+      } @else if (store.consultaActiva()) {
+        Mostrar más resultados
+      } @else {
+        Más películas · página {{ store.paginaActual() + 1 }} de {{ store.totalPaginas() }}
+      }
+    </button>
+  </div>
+}
