@@ -1,0 +1,89 @@
+.c-boton {
+  // Tokens de diseño
+  --boton-color-normal: var(--mlt-sys-color-base-2);
+  --boton-color-normal-borde: var(--mlt-sys-color-base-6);
+  --boton-color-normal-texto: var(--mlt-sys-color-base-9);
+  --boton-color-principal: var(--mlt-sys-color-principal-5);
+  --boton-color-principal-texto: var(--mlt-sys-color-base-2);
+  --boton-color-hover: var(--mlt-sys-color-base-9);
+  --boton-color-hover-texto: var(--mlt-sys-color-base-2);
+  --boton-color-foco: var(--mlt-sys-color-principal-5);
+  --boton-medida-5: var(--mlt-sys-medida-5); // 48px
+  --boton-padding-7: var(--mlt-sys-padding-7); // 16px
+  --boton-padding-6: var(--mlt-sys-padding-6); // 14px
+  --boton-font-size-4: var(--mlt-sys-font-size-4); // 15px
+  --boton-font-size-3: var(--mlt-sys-font-size-3); // 14px
+  --boton-width-1: var(--mlt-sys-width-1); // 1px
+  --boton-border-radius-3: var(--mlt-sys-border-radius-3); // 4px
+  --boton-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+  --boton-duracion-1: var(--mlt-sys-duracion-1); // 150ms
+  --boton-opacidad-deshabilitado: 0.4;
+  --boton-width-2: var(--mlt-sys-width-2); // 2px
+  --boton-padding-0: var(--mlt-sys-padding-0); // 0px
+
+  // Estado privado: por defecto, función normal y tamaño m
+  --boton-privateState-fondo: var(--boton-color-normal);
+  --boton-privateState-borde: var(--boton-color-normal-borde);
+  --boton-privateState-texto: var(--boton-color-normal-texto);
+  --boton-privateState-alto: var(--boton-medida-5);
+  --boton-privateState-padding: var(--boton-padding-7);
+  --boton-privateState-font-size: var(--boton-font-size-4);
+
+  // Propiedades CSS
+  height: var(--boton-privateState-alto);
+  min-height: var(--boton-medida-5);
+  padding: var(--boton-padding-0) var(--boton-privateState-padding);
+  border-width: var(--boton-width-1);
+  border-style: solid;
+  border-color: var(--boton-privateState-borde);
+  border-radius: var(--boton-border-radius-3);
+  background-color: var(--boton-privateState-fondo);
+  color: var(--boton-privateState-texto);
+  font-family: inherit;
+  font-size: var(--boton-privateState-font-size);
+  font-weight: var(--boton-font-weight-3);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color var(--boton-duracion-1) ease,
+    color var(--boton-duracion-1) ease,
+    border-color var(--boton-duracion-1) ease;
+
+  &:hover:not([disabled]) {
+    background-color: var(--boton-color-hover);
+    border-color: var(--boton-color-hover);
+    color: var(--boton-color-hover-texto);
+  }
+
+  &[disabled] {
+    opacity: var(--boton-opacidad-deshabilitado);
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: var(--boton-width-2) solid var(--boton-color-foco);
+    outline-offset: var(--boton-width-2);
+  }
+
+  // Modificadores: solo reasignan el estado privado
+  &--funcion-normal {
+    --boton-privateState-fondo: var(--boton-color-normal);
+    --boton-privateState-borde: var(--boton-color-normal-borde);
+    --boton-privateState-texto: var(--boton-color-normal-texto);
+  }
+  &--funcion-principal {
+    --boton-privateState-fondo: var(--boton-color-principal);
+    --boton-privateState-borde: var(--boton-color-principal);
+    --boton-privateState-texto: var(--boton-color-principal-texto);
+  }
+  &--size-m {
+    --boton-privateState-alto: var(--boton-medida-5);
+    --boton-privateState-padding: var(--boton-padding-7);
+    --boton-privateState-font-size: var(--boton-font-size-4);
+  }
+  &--size-s {
+    --boton-privateState-alto: auto;
+    --boton-privateState-padding: var(--boton-padding-6);
+    --boton-privateState-font-size: var(--boton-font-size-3);
+  }
+}

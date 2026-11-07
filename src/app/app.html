@@ -1,1 +1,44 @@
-<app-movie-list />
+<a class="c-salto" href="#catalogo">Saltar al catálogo</a>
+
+<header class="c-hero">
+  <div class="c-hero__interior">
+    <app-marca />
+
+    <app-buscador
+      [(texto)]="store.texto"
+      [hayBusqueda]="store.modoBusqueda()"
+      (buscar)="store.buscar()"
+      (limpiar)="store.limpiarBusqueda()"
+    />
+
+    <app-filtros
+      [genero]="store.generoTexto()"
+      (generoChange)="store.cambiarGenero($event)"
+      [duracion]="store.duracion()"
+      (duracionChange)="store.cambiarDuracion($event)"
+      [nota]="store.notaTexto()"
+      (notaChange)="store.cambiarNota($event)"
+      [orden]="store.orden()"
+      (ordenChange)="store.cambiarOrden($event)"
+      [generos]="store.generos()"
+      [notaMaxima]="store.notaMaxima()"
+      [hayNotas]="store.hayNotas()"
+      [hayFiltros]="store.hayFiltros()"
+      (quitarFiltros)="store.quitarFiltros()"
+    />
+  </div>
+</header>
+
+<div class="l-pagina">
+  <main id="catalogo" aria-labelledby="catalogo-titulo">
+    <h2 id="catalogo-titulo" class="u-solo-lectores">Catálogo de películas</h2>
+    <app-lista-peliculas (abrir)="abrirDetalle($event)" />
+  </main>
+
+  <app-detalle-pelicula
+    [pelicula]="store.detalle()"
+    [cargando]="store.cargandoDetalle()"
+    [error]="store.errorDetalle()"
+    (cerrar)="cerrarDetalle()"
+  />
+</div>

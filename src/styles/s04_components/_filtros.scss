@@ -1,0 +1,94 @@
+@use "../s01_utilities" as *;
+
+// Barra de filtros en rejilla: cada filtro tiene su celda y nada se mueve
+// al cambiar de opción o al cargar.
+.c-filtros {
+  // Tokens de diseño
+  --filtros-color-fondo: var(--mlt-sys-color-base-2);
+  --filtros-color-texto: var(--mlt-sys-color-base-9);
+  --filtros-color-borde: var(--mlt-sys-color-base-6);
+  --filtros-color-linea: var(--mlt-sys-color-base-4);
+  --filtros-color-foco: var(--mlt-sys-color-principal-5);
+  --filtros-color-aviso: var(--mlt-sys-color-principal-5);
+  --filtros-medida-8: var(--mlt-sys-medida-8); // 160px
+  --filtros-medida-5: var(--mlt-sys-medida-5); // 48px
+  --filtros-margin-6: var(--mlt-sys-margin-6); // 14px
+  --filtros-margin-7: var(--mlt-sys-margin-7); // 16px
+  --filtros-margin-2: var(--mlt-sys-margin-2); // 6px
+  --filtros-margin-9: var(--mlt-sys-margin-9); // 24px
+  --filtros-padding-9: var(--mlt-sys-padding-9); // 24px
+  --filtros-padding-5: var(--mlt-sys-padding-5); // 12px
+  --filtros-flecha: var(--mlt-sys-icono-flecha);
+  --filtros-font-size-3: var(--mlt-sys-font-size-3); // 14px
+  --filtros-font-size-2: var(--mlt-sys-font-size-2); // 13px
+  --filtros-width-1: var(--mlt-sys-width-1); // 1px
+  --filtros-border-radius-3: var(--mlt-sys-border-radius-3); // 4px
+  --filtros-opacidad-deshabilitado: 0.55;
+  --filtros-width-2: var(--mlt-sys-width-2); // 2px
+  --filtros-padding-0: var(--mlt-sys-padding-0); // 0px
+
+  // Estado privado: por defecto, cuatro filtros y el botón en una fila
+  --filtros-privateState-columnas: repeat(4, minmax(var(--filtros-medida-8), 1fr)) auto;
+
+  // Propiedades CSS
+  display: grid;
+  grid-template-columns: var(--filtros-privateState-columnas);
+  gap: var(--filtros-margin-6) var(--filtros-margin-7);
+  align-items: end;
+  margin-top: var(--filtros-margin-9);
+  padding-top: var(--filtros-padding-9);
+  border-top: var(--filtros-width-1) solid var(--filtros-color-linea);
+
+  // En pantallas pequeñas cambian las columnas, no las propiedades
+  @include hasta($breakpoint-tablet) {
+    --filtros-privateState-columnas: 1fr 1fr;
+  }
+
+  @include hasta($breakpoint-movil) {
+    --filtros-privateState-columnas: 1fr;
+  }
+
+  &__filtro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filtros-margin-2);
+    min-width: 0;
+  }
+
+  &__etiqueta {
+    @include etiqueta;
+  }
+
+  &__select {
+    width: 100%;
+    min-height: var(--filtros-medida-5);
+    padding: var(--filtros-padding-0) var(--filtros-padding-5);
+    border: var(--filtros-width-1) solid var(--filtros-color-borde);
+    border-radius: var(--filtros-border-radius-3);
+    background-color: var(--filtros-color-fondo);
+    // Flecha fija: su tamaño no depende del texto elegido
+    background-image: var(--filtros-flecha);
+    background-repeat: no-repeat;
+    background-position: right var(--filtros-margin-6) center;
+    appearance: none;
+    color: var(--filtros-color-texto);
+    font-family: inherit;
+    font-size: var(--filtros-font-size-3);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: var(--filtros-width-2) solid var(--filtros-color-foco);
+      outline-offset: var(--filtros-width-2);
+    }
+
+    &:disabled {
+      opacity: var(--filtros-opacidad-deshabilitado);
+      cursor: not-allowed;
+    }
+  }
+
+  &__aviso {
+    font-size: var(--filtros-font-size-2);
+    color: var(--filtros-color-aviso);
+  }
+}

@@ -1,0 +1,19 @@
+// Decisiones: qué opción del catálogo se usa. Con !default se pueden
+// cambiar desde styles.scss sin tocar este archivo.
+$font-default: 'sans-serif' !default;
+$font-titulos: 'serif' !default;
+
+// Qué gama de $colores usa cada color semántico.
+$colores-semanticos: (
+  'principal': 'rosa',
+  'alternativo': 'iris',
+  'base': 'morado'
+) !default;
+
+// Color de la flecha de los <select>: gama semántica y posición del tono (9 = más claro).
+$flecha-select-color: 'base' !default;
+$flecha-select-tono: 9 !default;
+
+// Posición de cada breakpoint en $breakpoints.
+$breakpoint-movil: 1 !default;
+$breakpoint-tablet: 2 !default;

@@ -1,0 +1,36 @@
+.c-lista {
+  // Tokens de diseño
+  --lista-color-borde: var(--mlt-sys-color-base-8);
+  --lista-color-texto: var(--mlt-sys-color-base-8);
+  --lista-font: var(--mlt-sys-font-titulos);
+  --lista-medida-9: var(--mlt-sys-medida-9); // 170px
+  --lista-margin-8: var(--mlt-sys-margin-8); // 20px
+  --lista-margin-7: var(--mlt-sys-margin-7); // 16px
+  --lista-padding-9: var(--mlt-sys-padding-9); // 24px
+  --lista-font-size-7: var(--mlt-sys-font-size-7); // 18px
+  --lista-width-1: var(--mlt-sys-width-1); // 1px
+  --lista-border-radius-3: var(--mlt-sys-border-radius-3); // 4px
+  --lista-margin-0: var(--mlt-sys-margin-0); // 0px
+  --lista-padding-0: var(--mlt-sys-padding-0); // 0px
+
+  // Propiedades CSS
+  display: block;
+
+  &__vacio {
+    padding: var(--lista-padding-9);
+    border: var(--lista-width-1) dashed var(--lista-color-borde);
+    border-radius: var(--lista-border-radius-3);
+    color: var(--lista-color-texto);
+    font-family: var(--lista-font);
+    font-size: var(--lista-font-size-7);
+  }
+
+  &__rejilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--lista-medida-9), 1fr));
+    gap: var(--lista-margin-8) var(--lista-margin-7);
+    margin: var(--lista-margin-0);
+    padding: var(--lista-padding-0);
+    list-style: none;
+  }
+}

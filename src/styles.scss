@@ -1,0 +1,7 @@
+// Solo @use de las capas, en orden. s01 no genera CSS: son herramientas.
+@use "styles/s01_utilities";
+@use "styles/s02_vendor";
+@use "styles/s03_base";
+@use "styles/s04_components";
+@use "styles/s05_layouts";
+@use "styles/s06_global";

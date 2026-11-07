@@ -1,0 +1,43 @@
+// Catálogo: listas de valores puros, sin decisiones y sin etiquetas.
+// Solo $colores (nombre de gama) y $fuentes (nombre CSS) llevan clave.
+
+// Gamas de color de 9 tonos (1 = más oscuro, 9 = más claro).
+$colores: (
+  'morado': (#0E0620, #170B2B, #241342, #3A2563, #4F3787, #6A4FA3, #9B84C8, #B9A6DD, #F6EEFF),
+  'rosa': (#5A1230, #8A1E4B, #B5306A, #E0407F, #FF5C9A, #FF80B2, #FFA3C8, #FFC7DD, #FFE6F0),
+  'iris': (#1B0F59, #2A1688, #3F25B8, #5C38E6, #7A4DFF, #9470FF, #B093FF, #CDB8FF, #EBE0FF),
+  'neutro': (#000000, #1F1F1F, #3D3D3D, #5C5C5C, #7A7A7A, #999999, #B8B8B8, #D6D6D6, #FFFFFF)
+);
+
+$fuentes: (
+  'sans-serif': ('Archivo', 'Segoe UI', system-ui, sans-serif),
+  'serif': ('Unbounded', 'Archivo', system-ui, sans-serif)
+);
+
+// Ficheros de fuente que se cargan con @font-face: familia, peso, archivo, formato.
+$fuentes-web: (
+  ('Unbounded', 800, 'unbounded-800.ttf', 'truetype'),
+  ('Archivo', 400, 'archivo-400.woff2', 'woff2'),
+  ('Archivo', 500, 'archivo-500.woff2', 'woff2'),
+  ('Archivo', 600, 'archivo-600.woff2', 'woff2')
+);
+
+// El último tamaño es fluido: crece con el ancho de pantalla entre 30px y 51px.
+$font-sizes: (12px, 13px, 14px, 15px, 16px, 17px, 18px, 24px, clamp(30px, 4.6vw, 51px));
+$font-weights: (400, 500, 600, 800);
+
+$margins: (0px, 4px, 6px, 8px, 10px, 12px, 14px, 16px, 20px, 24px, 28px, 32px, 48px);
+$paddings: (0px, 4px, 6px, 8px, 10px, 12px, 14px, 16px, 20px, 24px, 28px, 32px, 48px);
+$border-radius: (1px, 2px, 4px, 6px);
+$widths: (0px, 1px, 2px, 4px);
+
+// Alturas, anchos de columna y otras medidas, en orden ascendente.
+$medidas: (26px, 32px, 42px, 44px, 48px, 56px, 64px, 160px, 170px, 240px, 390px, 1380px);
+
+$duraciones: (150ms, 220ms, 5s, 6s);
+
+// Cada sombra es una lista; la coma final crea una lista de una sola sombra.
+$sombras: ((0 -4px 24px rgba(0, 0, 0, 0.55)),);
+
+// Anchos de pantalla para los @media (no admiten var(), por eso no generan tokens).
+$breakpoints: (520px, 1020px);

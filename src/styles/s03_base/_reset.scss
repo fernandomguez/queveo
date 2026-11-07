@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
+// El scrollbar aparece y desaparece con los resultados: sin esto desplaza todo.
+html {
+  scrollbar-gutter: stable;
+}
+
+img {
+  max-width: 100%;
+}

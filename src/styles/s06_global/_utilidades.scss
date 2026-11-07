@@ -1,0 +1,18 @@
+// Oculta algo a la vista pero lo deja disponible para lectores de pantalla.
+.u-solo-lectores {
+  // Tokens de diseño
+  --solo-lectores-width-0: var(--mlt-sys-width-0); // 0px
+  --solo-lectores-width-1: var(--mlt-sys-width-1); // 1px
+  --solo-lectores-padding-0: var(--mlt-sys-padding-0); // 0px
+
+  // Propiedades CSS
+  position: absolute;
+  width: var(--solo-lectores-width-1);
+  height: var(--solo-lectores-width-1);
+  margin: calc(-1 * var(--solo-lectores-width-1));
+  padding: var(--solo-lectores-padding-0);
+  border: var(--solo-lectores-width-0);
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}

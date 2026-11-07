@@ -1,0 +1,33 @@
+// Enlace «Saltar al catálogo»: oculto arriba hasta que recibe el foco.
+.c-salto {
+  // Tokens de diseño
+  --salto-color-fondo: var(--mlt-sys-color-base-9);
+  --salto-color-texto: var(--mlt-sys-color-base-2);
+  --salto-margin-7: var(--mlt-sys-margin-7); // 16px
+  --salto-medida-7: var(--mlt-sys-medida-7); // 64px
+  --salto-padding-5: var(--mlt-sys-padding-5); // 12px
+  --salto-padding-7: var(--mlt-sys-padding-7); // 16px
+  --salto-border-radius-4: var(--mlt-sys-border-radius-4); // 6px
+  --salto-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+  --salto-duracion-1: var(--mlt-sys-duracion-1); // 150ms
+  --salto-margin-0: var(--mlt-sys-margin-0); // 0px
+
+  // Estado privado: por defecto, escondido
+  --salto-privateState-arriba: calc(-1 * var(--salto-medida-7));
+
+  // Propiedades CSS
+  position: absolute;
+  left: var(--salto-margin-7);
+  top: var(--salto-privateState-arriba);
+  z-index: 50;
+  padding: var(--salto-padding-5) var(--salto-padding-7);
+  border-radius: 0 0 var(--salto-border-radius-4) var(--salto-border-radius-4);
+  background-color: var(--salto-color-fondo);
+  color: var(--salto-color-texto);
+  font-weight: var(--salto-font-weight-3);
+  transition: top var(--salto-duracion-1) ease;
+
+  &:focus {
+    --salto-privateState-arriba: var(--salto-margin-0);
+  }
+}

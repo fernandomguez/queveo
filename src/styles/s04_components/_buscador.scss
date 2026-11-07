@@ -1,0 +1,55 @@
+@use "../s01_utilities" as *;
+
+.c-buscador {
+  // Tokens de diseño
+  --buscador-color-fondo: var(--mlt-sys-color-base-2);
+  --buscador-color-texto: var(--mlt-sys-color-base-9);
+  --buscador-color-placeholder: var(--mlt-sys-color-base-8);
+  --buscador-color-borde: var(--mlt-sys-color-base-6);
+  --buscador-color-foco: var(--mlt-sys-color-principal-5);
+  --buscador-medida-5: var(--mlt-sys-medida-5); // 48px
+  --buscador-padding-7: var(--mlt-sys-padding-7); // 16px
+  --buscador-font-size-5: var(--mlt-sys-font-size-5); // 16px
+  --buscador-margin-3: var(--mlt-sys-margin-3); // 8px
+  --buscador-width-1: var(--mlt-sys-width-1); // 1px
+  --buscador-border-radius-3: var(--mlt-sys-border-radius-3); // 4px
+  --buscador-width-2: var(--mlt-sys-width-2); // 2px
+  --buscador-padding-0: var(--mlt-sys-padding-0); // 0px
+
+  // Propiedades CSS
+  display: block;
+
+  &__etiqueta {
+    @include etiqueta;
+    display: block;
+    margin-bottom: var(--buscador-margin-3);
+  }
+
+  &__controles {
+    display: flex;
+    gap: var(--buscador-margin-3);
+  }
+
+  &__campo {
+    flex: 1;
+    min-width: 0;
+    height: var(--buscador-medida-5);
+    padding: var(--buscador-padding-0) var(--buscador-padding-7);
+    border: var(--buscador-width-1) solid var(--buscador-color-borde);
+    border-radius: var(--buscador-border-radius-3);
+    background-color: var(--buscador-color-fondo);
+    color: var(--buscador-color-texto);
+    font-family: inherit;
+    font-size: var(--buscador-font-size-5);
+    outline: none;
+
+    &::placeholder {
+      color: var(--buscador-color-placeholder);
+    }
+
+    &:focus-visible {
+      outline: var(--buscador-width-2) solid var(--buscador-color-foco);
+      outline-offset: var(--buscador-width-2);
+    }
+  }
+}

@@ -1,0 +1,67 @@
+<div class="c-filtros__filtro">
+  <label class="c-filtros__etiqueta" for="f-genero">Género</label>
+  <select
+    id="f-genero"
+    class="c-filtros__select"
+    [disabled]="generos().length === 0"
+    (change)="genero.set(valorDe($event))"
+  >
+    @if (generos().length === 0) {
+      <option value="">Cargando géneros…</option>
+    } @else {
+      <option value="" [selected]="genero() === ''">Todos</option>
+      @for (g of generos(); track g.id) {
+        <option [value]="g.id" [selected]="'' + g.id === genero()">{{ g.name }}</option>
+      }
+    }
+  </select>
+</div>
+
+<div class="c-filtros__filtro">
+  <label class="c-filtros__etiqueta" for="f-duracion">Duración</label>
+  <select
+    id="f-duracion"
+    class="c-filtros__select"
+    (change)="duracion.set(valorDe($event))"
+  >
+    @for (d of duraciones; track d.valor) {
+      <option [value]="d.valor" [selected]="d.valor === duracion()">{{ d.etiqueta }}</option>
+    }
+  </select>
+</div>
+
+<div class="c-filtros__filtro">
+  <label class="c-filtros__etiqueta" for="f-nota">Valoración mínima</label>
+  <select
+    id="f-nota"
+    class="c-filtros__select"
+    [disabled]="!hayNotas()"
+    (change)="nota.set(valorDe($event))"
+  >
+    <option value="" [selected]="nota() === ''">Cualquier nota</option>
+    @for (v of notas; track v) {
+      <option [value]="v" [disabled]="v > notaMaxima()" [selected]="'' + v === nota()">{{ v }}+</option>
+    }
+  </select>
+  @if (!hayNotas()) {
+    <span class="c-filtros__aviso">Sin notas en este catálogo</span>
+  }
+</div>
+
+<div class="c-filtros__filtro">
+  <label class="c-filtros__etiqueta" for="f-orden">Ordenar por</label>
+  <select id="f-orden" class="c-filtros__select" (change)="orden.set(valorDe($event))">
+    @for (o of ordenes; track o.valor) {
+      <option [value]="o.valor" [selected]="o.valor === orden()">{{ o.etiqueta }}</option>
+    }
+  </select>
+</div>
+
+<button
+  type="button"
+  class="c-boton c-boton--size-s"
+  [disabled]="!hayFiltros()"
+  (click)="quitarFiltros.emit()"
+>
+  Quitar filtros
+</button>

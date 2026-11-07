@@ -1,0 +1,158 @@
+// Tarjeta de película: el host es el bloque y el botón ocupa toda la tarjeta.
+.c-tarjeta {
+  // Tokens de diseño
+  --tarjeta-color-fondo: var(--mlt-sys-color-base-2);
+  --tarjeta-color-poster: var(--mlt-sys-color-base-3);
+  --tarjeta-color-borde: var(--mlt-sys-color-base-4);
+  --tarjeta-color-hover: var(--mlt-sys-color-base-9);
+  --tarjeta-color-activa: var(--mlt-sys-color-principal-5);
+  --tarjeta-color-texto-suave: var(--mlt-sys-color-base-8);
+  --tarjeta-color-lupa-fondo: var(--mlt-sys-color-base-9);
+  --tarjeta-color-lupa-icono: var(--mlt-sys-color-base-2);
+  --tarjeta-font-titulos: var(--mlt-sys-font-titulos);
+  --tarjeta-width-1: var(--mlt-sys-width-1); // 1px
+  --tarjeta-border-radius-3: var(--mlt-sys-border-radius-3); // 4px
+  --tarjeta-margin-4: var(--mlt-sys-margin-4); // 10px
+  --tarjeta-medida-6: var(--mlt-sys-medida-6); // 56px
+  --tarjeta-medida-1: var(--mlt-sys-medida-1); // 26px
+  --tarjeta-lupa-trazo: 2.5;
+  --tarjeta-padding-5: var(--mlt-sys-padding-5); // 12px
+  --tarjeta-padding-6: var(--mlt-sys-padding-6); // 14px
+  --tarjeta-font-size-4: var(--mlt-sys-font-size-4); // 15px
+  --tarjeta-font-size-3: var(--mlt-sys-font-size-3); // 14px
+  --tarjeta-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+  --tarjeta-medida-10: var(--mlt-sys-medida-10); // 240px
+  --tarjeta-duracion-1: var(--mlt-sys-duracion-1); // 150ms
+  --tarjeta-margin-1: var(--mlt-sys-margin-1); // 4px
+  --tarjeta-width-2: var(--mlt-sys-width-2); // 2px
+  --tarjeta-margin-0: var(--mlt-sys-margin-0); // 0px
+  --tarjeta-medida-3: var(--mlt-sys-medida-3); // 42px
+  --tarjeta-padding-0: var(--mlt-sys-padding-0); // 0px
+
+  // Estado privado: por defecto, tarjeta normal
+  --tarjeta-privateState-borde: var(--tarjeta-color-borde);
+  --tarjeta-privateState-borde-hover: var(--tarjeta-color-hover);
+  --tarjeta-privateState-sombra: none;
+
+  // Propiedades CSS
+  display: block;
+
+  // Modificador: la tarjeta abierta en el panel de detalle
+  &--estado-activa {
+    --tarjeta-privateState-borde: var(--tarjeta-color-activa);
+    --tarjeta-privateState-borde-hover: var(--tarjeta-color-activa);
+    --tarjeta-privateState-sombra: inset 0 0 0 var(--tarjeta-width-1) var(--tarjeta-color-activa);
+  }
+
+  &__boton {
+    display: block;
+    width: 100%;
+    padding: var(--tarjeta-padding-0);
+    border: var(--tarjeta-width-1) solid var(--tarjeta-privateState-borde);
+    border-radius: var(--tarjeta-border-radius-3);
+    box-shadow: var(--tarjeta-privateState-sombra);
+    background-color: var(--tarjeta-color-fondo);
+    color: inherit;
+    font: inherit;
+    text-align: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color var(--tarjeta-duracion-1) ease;
+
+    &:hover {
+      border-color: var(--tarjeta-privateState-borde-hover);
+    }
+
+    &:focus-visible {
+      outline: var(--tarjeta-width-2) solid var(--tarjeta-color-activa);
+      outline-offset: var(--tarjeta-width-2);
+    }
+  }
+
+  &__poster {
+    position: relative;
+    display: block;
+    aspect-ratio: 2 / 3;
+    background-color: var(--tarjeta-color-poster);
+  }
+
+  &__imagen {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__sin-poster {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    min-height: var(--tarjeta-medida-10);
+    color: var(--tarjeta-color-texto-suave);
+    font-family: var(--tarjeta-font-titulos);
+  }
+
+  // El sello de nota (c-nota) vive dentro del póster, en una esquina
+  &__nota {
+    position: absolute;
+    top: var(--tarjeta-margin-4);
+    left: var(--tarjeta-margin-4);
+  }
+
+  // Círculo con una lupa en el centro del póster: aparece al pasar el ratón
+  // o con el foco del teclado
+  &__lupa {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: var(--tarjeta-medida-6);
+    height: var(--tarjeta-medida-6);
+    border-radius: 50%;
+    background-color: var(--tarjeta-color-lupa-fondo);
+    color: var(--tarjeta-color-lupa-icono);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition:
+      opacity var(--tarjeta-duracion-1) ease,
+      transform var(--tarjeta-duracion-1) ease;
+  }
+
+  &__lupa-icono {
+    width: var(--tarjeta-medida-1);
+    height: var(--tarjeta-medida-1);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--tarjeta-lupa-trazo);
+    stroke-linecap: round;
+  }
+
+  &__boton:hover &__lupa,
+  &__boton:focus-visible &__lupa {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  &__cuerpo {
+    display: block;
+    padding: var(--tarjeta-padding-5) var(--tarjeta-padding-5)
+      var(--tarjeta-padding-6);
+  }
+
+  &__titulo {
+    display: block;
+    min-height: var(--tarjeta-medida-3);
+    margin-bottom: var(--tarjeta-margin-1);
+    font-size: var(--tarjeta-font-size-4);
+    font-weight: var(--tarjeta-font-weight-3);
+    line-height: 1.25;
+  }
+
+  &__meta {
+    display: block;
+    margin: var(--tarjeta-margin-0);
+    font-size: var(--tarjeta-font-size-3);
+    color: var(--tarjeta-color-texto-suave);
+  }
+}
