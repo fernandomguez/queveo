@@ -1,6 +1,8 @@
+// Copia este archivo como environment.ts y pon tu clave de TMDB
+// (https://www.themoviedb.org/settings/api). environment.ts no se sube a git.
 export const environment = {
   production: false,
-  tmdbApiKey: '186300ef075a6c6c0212d8b0a0def40c',
+  tmdbApiKey: 'PON_AQUI_TU_API_KEY',
   tmdbBaseUrl: 'https://api.themoviedb.org/3',
   tmdbImageBaseUrl: 'https://image.tmdb.org/t/p',
   tmdbLanguage: 'es-ES',
