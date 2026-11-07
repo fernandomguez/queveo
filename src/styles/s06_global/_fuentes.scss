@@ -1,0 +1,13 @@
+@use "sass:list";
+@use "../s01_utilities" as *;
+
+// Una regla @font-face por cada fuente del catálogo ($fuentes-web).
+@each $fuente in $fuentes-web {
+  @font-face {
+    font-family: list.nth($fuente, 1);
+    font-style: normal;
+    font-weight: list.nth($fuente, 2);
+    font-display: swap;
+    src: url('/fonts/#{list.nth($fuente, 3)}') format(list.nth($fuente, 4));
+  }
+}

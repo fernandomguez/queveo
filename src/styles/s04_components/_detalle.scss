@@ -1,0 +1,236 @@
+@use "../s01_utilities" as *;
+
+// Panel de detalle: a la derecha en escritorio y hoja inferior en móvil.
+.c-detalle {
+  // Tokens de diseño
+  --detalle-color-fondo: var(--mlt-sys-color-base-2);
+  --detalle-color-borde: var(--mlt-sys-color-base-6);
+  --detalle-color-linea: var(--mlt-sys-color-base-4);
+  --detalle-color-texto: var(--mlt-sys-color-base-9);
+  --detalle-color-texto-suave: var(--mlt-sys-color-base-8);
+  --detalle-color-acento: var(--mlt-sys-color-principal-5);
+  --detalle-font-titulos: var(--mlt-sys-font-titulos);
+  --detalle-width-1: var(--mlt-sys-width-1); // 1px
+  --detalle-border-radius-3: var(--mlt-sys-border-radius-3); // 4px
+  --detalle-border-radius-4: var(--mlt-sys-border-radius-4); // 6px
+  --detalle-margin-7: var(--mlt-sys-margin-7); // 16px
+  --detalle-margin-11: var(--mlt-sys-margin-11); // 32px
+  --detalle-sombra-1: var(--mlt-sys-sombra-1); // sombra del panel
+  --detalle-duracion-2: var(--mlt-sys-duracion-2); // 220ms
+  --detalle-desplazamiento-cerrado: translateY(105%);
+  --detalle-medida-4: var(--mlt-sys-medida-4); // 44px
+  --detalle-padding-7: var(--mlt-sys-padding-7); // 16px
+  --detalle-font-size-3: var(--mlt-sys-font-size-3); // 14px
+  --detalle-padding-8: var(--mlt-sys-padding-8); // 20px
+  --detalle-padding-9: var(--mlt-sys-padding-9); // 24px
+  --detalle-padding-11: var(--mlt-sys-padding-11); // 32px
+  --detalle-font-size-8: var(--mlt-sys-font-size-8); // 24px
+  --detalle-font-size-6: var(--mlt-sys-font-size-6); // 17px
+  --detalle-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+  --detalle-font-weight-2: var(--mlt-sys-font-weight-2); // 500
+  --detalle-margin-3: var(--mlt-sys-margin-3); // 8px
+  --detalle-margin-4: var(--mlt-sys-margin-4); // 10px
+  --detalle-margin-8: var(--mlt-sys-margin-8); // 20px
+  --detalle-margin-2: var(--mlt-sys-margin-2); // 6px
+  --detalle-margin-5: var(--mlt-sys-margin-5); // 12px
+  --detalle-padding-3: var(--mlt-sys-padding-3); // 8px
+  --detalle-padding-6: var(--mlt-sys-padding-6); // 14px
+  --detalle-width-2: var(--mlt-sys-width-2); // 2px
+  --detalle-margin-0: var(--mlt-sys-margin-0); // 0px
+  --detalle-padding-0: var(--mlt-sys-padding-0); // 0px
+
+  // Estado privado: por defecto, panel cerrado (solo se nota en móvil)
+  --detalle-privateState-desplazamiento: var(--detalle-desplazamiento-cerrado);
+
+  // Propiedades CSS
+  position: sticky;
+  top: var(--detalle-margin-7);
+  display: block;
+  max-height: calc(100vh - var(--detalle-margin-11));
+  border: var(--detalle-width-1) solid var(--detalle-color-borde);
+  border-radius: var(--detalle-border-radius-3);
+  background-color: var(--detalle-color-fondo);
+  overflow: hidden;
+  overflow-y: auto;
+
+  @include hasta($breakpoint-tablet) {
+    position: fixed;
+    top: auto;
+    left: var(--detalle-margin-0);
+    right: var(--detalle-margin-0);
+    bottom: var(--detalle-margin-0);
+    z-index: 20;
+    max-height: 82vh;
+    border-bottom: none;
+    border-radius: var(--detalle-border-radius-4) var(--detalle-border-radius-4) 0 0;
+    box-shadow: var(--detalle-sombra-1);
+    transform: var(--detalle-privateState-desplazamiento);
+    transition: transform var(--detalle-duracion-2) ease;
+  }
+
+  // Modificador: con una película elegida el panel se muestra
+  &--estado-abierto {
+    --detalle-privateState-desplazamiento: none;
+  }
+
+  &__vacio {
+    padding: var(--detalle-padding-11) var(--detalle-padding-9);
+    color: var(--detalle-color-texto-suave);
+  }
+
+  &__titulo-vacio {
+    font-family: var(--detalle-font-titulos);
+  }
+
+  &__cerrar {
+    height: var(--detalle-medida-4);
+    margin: var(--detalle-margin-7) var(--detalle-margin-7) var(--detalle-margin-0);
+    padding: var(--detalle-padding-0) var(--detalle-padding-7);
+    border: var(--detalle-width-1) solid var(--detalle-color-borde);
+    border-radius: var(--detalle-border-radius-3);
+    background-color: var(--detalle-color-fondo);
+    color: var(--detalle-color-texto);
+    font-family: inherit;
+    font-size: var(--detalle-font-size-3);
+    font-weight: var(--detalle-font-weight-3);
+    cursor: pointer;
+
+    &:hover:not([disabled]) {
+      border-color: var(--detalle-color-acento);
+      background-color: var(--detalle-color-acento);
+      color: var(--detalle-color-fondo);
+    }
+
+    &:focus-visible {
+      outline: var(--detalle-width-2) solid var(--detalle-color-acento);
+      outline-offset: var(--detalle-width-2);
+    }
+  }
+
+  &__fondo {
+    margin-top: var(--detalle-margin-7);
+    border-bottom: var(--detalle-width-1) solid var(--detalle-color-linea);
+  }
+
+  &__imagen {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  &__contenido {
+    padding: var(--detalle-padding-8) var(--detalle-padding-9)
+      var(--detalle-padding-9);
+  }
+
+  &__titulo {
+    margin: var(--detalle-margin-0) var(--detalle-margin-0) var(--detalle-margin-2);
+    font-family: var(--detalle-font-titulos);
+    font-size: var(--detalle-font-size-8);
+    font-weight: var(--detalle-font-weight-3);
+    line-height: 1.2;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      outline: var(--detalle-width-2) solid var(--detalle-color-acento);
+      outline-offset: var(--detalle-width-2);
+    }
+  }
+
+  &__subtitulo {
+    @include etiqueta;
+    margin: var(--detalle-margin-8) var(--detalle-margin-0) var(--detalle-margin-2);
+  }
+
+  &__estado,
+  &__error {
+    margin: var(--detalle-margin-0);
+    padding-bottom: var(--detalle-padding-3);
+  }
+
+  &__error {
+    color: var(--detalle-color-acento);
+    font-weight: var(--detalle-font-weight-3);
+  }
+
+  &__lema {
+    margin: var(--detalle-margin-0) var(--detalle-margin-0) var(--detalle-margin-5);
+    color: var(--detalle-color-texto-suave);
+    font-family: var(--detalle-font-titulos);
+    font-size: var(--detalle-font-size-6);
+    font-style: italic;
+  }
+
+  // Año, duración, nota y votos en una fila
+  &__datos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--detalle-margin-4);
+    padding-bottom: var(--detalle-padding-6);
+    border-bottom: var(--detalle-width-1) solid var(--detalle-color-linea);
+    color: var(--detalle-color-texto);
+  }
+
+  &__votos {
+    color: var(--detalle-color-texto-suave);
+    font-size: var(--detalle-font-size-3);
+  }
+
+  // Géneros como texto separado por puntos, sin píldoras de colores
+  &__generos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--detalle-margin-2) var(--detalle-margin-3);
+    margin: var(--detalle-margin-5) var(--detalle-margin-0);
+    padding: var(--detalle-padding-0);
+    color: var(--detalle-color-texto-suave);
+    font-size: var(--detalle-font-size-3);
+    list-style: none;
+
+    li + li::before {
+      content: '·';
+      margin-right: var(--detalle-margin-3);
+    }
+  }
+
+  &__sinopsis {
+    color: var(--detalle-color-texto);
+    line-height: 1.65;
+  }
+
+  &__ficha {
+    display: grid;
+    gap: var(--detalle-margin-3);
+    margin: var(--detalle-margin-7) var(--detalle-margin-0) var(--detalle-margin-0);
+    padding: var(--detalle-padding-0);
+
+    div {
+      display: flex;
+      justify-content: space-between;
+      gap: var(--detalle-margin-7);
+      padding-top: var(--detalle-padding-3);
+      border-top: var(--detalle-width-1) solid var(--detalle-color-linea);
+    }
+
+    dt {
+      color: var(--detalle-color-texto-suave);
+    }
+
+    dd {
+      margin: var(--detalle-margin-0);
+      font-weight: var(--detalle-font-weight-2);
+    }
+  }
+
+  // «ⓘ» junto a Popularidad TMDB: al pasar el ratón explica la métrica
+  &__ayuda {
+    font-size: var(--detalle-font-size-3);
+    opacity: 0.75;
+    cursor: help;
+  }
+}

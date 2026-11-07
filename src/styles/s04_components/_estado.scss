@@ -1,0 +1,37 @@
+// Barra de estado del listado: altura fija para que nada se mueva al cargar.
+.c-estado {
+  // Tokens de diseño
+  --estado-color-texto: var(--mlt-sys-color-base-8);
+  --estado-color-destacado: var(--mlt-sys-color-base-9);
+  --estado-color-error: var(--mlt-sys-color-principal-5);
+  --estado-color-linea: var(--mlt-sys-color-base-4);
+  --estado-medida-2: var(--mlt-sys-medida-2); // 32px
+  --estado-margin-8: var(--mlt-sys-margin-8); // 20px
+  --estado-padding-3: var(--mlt-sys-padding-3); // 8px
+  --estado-font-size-3: var(--mlt-sys-font-size-3); // 14px
+  --estado-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+  --estado-width-1: var(--mlt-sys-width-1); // 1px
+  --estado-margin-0: var(--mlt-sys-margin-0); // 0px
+
+  // Propiedades CSS
+  min-height: var(--estado-medida-2);
+  margin-bottom: var(--estado-margin-8);
+  border-bottom: var(--estado-width-1) solid var(--estado-color-linea);
+  color: var(--estado-color-texto);
+  font-size: var(--estado-font-size-3);
+
+  &__texto,
+  &__error {
+    margin: var(--estado-margin-0);
+    padding-bottom: var(--estado-padding-3);
+  }
+
+  &__error {
+    color: var(--estado-color-error);
+    font-weight: var(--estado-font-weight-3);
+  }
+
+  &__destacado {
+    color: var(--estado-color-destacado);
+  }
+}

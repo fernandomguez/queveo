@@ -1,0 +1,25 @@
+@use "sass:list";
+@use "system_tokens" as *;
+
+// Aplica los estilos hasta el ancho de pantalla indicado (posición en $breakpoints:
+// $breakpoint-movil, $breakpoint-tablet).
+@mixin hasta($indice) {
+  @media (max-width: list.nth($breakpoints, $indice)) {
+    @content;
+  }
+}
+
+// Texto pequeño en mayúsculas de las etiquetas (campos y subtítulos).
+// Declara sus propios tokens para que las propiedades no lean --mlt-sys-* directamente.
+@mixin etiqueta {
+  --etiqueta-font-size-2: var(--mlt-sys-font-size-2); // 13px
+  --etiqueta-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+  --etiqueta-width-1: var(--mlt-sys-width-1); // 1px
+  --etiqueta-color-texto: var(--mlt-sys-color-base-8);
+
+  font-size: var(--etiqueta-font-size-2);
+  font-weight: var(--etiqueta-font-weight-3);
+  letter-spacing: var(--etiqueta-width-1);
+  text-transform: uppercase;
+  color: var(--etiqueta-color-texto);
+}

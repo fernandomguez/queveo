@@ -1,0 +1,64 @@
+@use "sass:list";
+@use "sass:map";
+@use "sass:meta";
+@use "../s01_utilities" as *;
+
+// Todo se genera recorriendo el catálogo: aquí no hay valores escritos a mano.
+:root {
+  // Gamas de color
+  @each $nombre, $tonos in $colores {
+    @for $i from 1 through list.length($tonos) {
+      --mlt-sys-color-#{$nombre}-#{$i}: #{list.nth($tonos, $i)};
+    }
+  }
+
+  // Cada tono de un color semántico apunta al mismo tono de su gama
+  @each $nombre, $gama in $colores-semanticos {
+    @for $i from 1 through list.length(map.get($colores, $gama)) {
+      --mlt-sys-color-#{$nombre}-#{$i}: var(--mlt-sys-color-#{$gama}-#{$i});
+    }
+  }
+
+  // meta.inspect conserva las comillas de "Segoe UI"
+  @each $nombre, $fuente in $fuentes {
+    --mlt-sys-font-#{$nombre}: #{meta.inspect($fuente)};
+  }
+  --mlt-sys-font-default: var(--mlt-sys-font-#{$font-default});
+  --mlt-sys-font-titulos: var(--mlt-sys-font-#{$font-titulos});
+
+  // Tamaños de letra y pesos
+  @for $i from 1 through list.length($font-sizes) {
+    --mlt-sys-font-size-#{$i}: #{list.nth($font-sizes, $i)};
+  }
+  @for $i from 1 through list.length($font-weights) {
+    --mlt-sys-font-weight-#{$i}: #{list.nth($font-weights, $i)};
+  }
+
+  // Márgenes, paddings y anchos empiezan en 0
+  @for $i from 0 through list.length($margins) - 1 {
+    --mlt-sys-margin-#{$i}: #{list.nth($margins, $i + 1)};
+  }
+  @for $i from 0 through list.length($paddings) - 1 {
+    --mlt-sys-padding-#{$i}: #{list.nth($paddings, $i + 1)};
+  }
+  @for $i from 0 through list.length($widths) - 1 {
+    --mlt-sys-width-#{$i}: #{list.nth($widths, $i + 1)};
+  }
+  @for $i from 1 through list.length($border-radius) {
+    --mlt-sys-border-radius-#{$i}: #{list.nth($border-radius, $i)};
+  }
+
+  // Medidas, duraciones y sombras
+  @for $i from 1 through list.length($medidas) {
+    --mlt-sys-medida-#{$i}: #{list.nth($medidas, $i)};
+  }
+  @for $i from 1 through list.length($duraciones) {
+    --mlt-sys-duracion-#{$i}: #{list.nth($duraciones, $i)};
+  }
+  @for $i from 1 through list.length($sombras) {
+    --mlt-sys-sombra-#{$i}: #{list.nth($sombras, $i)};
+  }
+
+  // Flecha de los select (color y tono decididos en _semantic_tokens)
+  --mlt-sys-icono-flecha: #{flecha-select(list.nth(map.get($colores, map.get($colores-semanticos, $flecha-select-color)), $flecha-select-tono))};
+}

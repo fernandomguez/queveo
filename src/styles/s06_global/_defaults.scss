@@ -1,0 +1,45 @@
+// Valores por defecto de toda la página, como custom properties.
+:root {
+  color-scheme: dark;
+  --mlt-default-color-fondo: var(--mlt-sys-color-base-2);
+  --mlt-default-color-texto: var(--mlt-sys-color-base-9);
+  --mlt-default-color-seleccion-texto: var(--mlt-sys-color-base-2);
+  --mlt-default-color-seleccion-fondo: var(--mlt-sys-color-principal-5);
+  --mlt-default-font: var(--mlt-sys-font-default);
+  --mlt-default-font-size: var(--mlt-sys-font-size-5);
+  --mlt-default-margin: var(--mlt-sys-margin-0);
+  --mlt-default-padding: var(--mlt-sys-padding-0);
+}
+
+body {
+  margin: var(--mlt-default-margin);
+  padding: var(--mlt-default-padding);
+  background-color: var(--mlt-default-color-fondo);
+  color: var(--mlt-default-color-texto);
+  font-family: var(--mlt-default-font);
+  font-size: var(--mlt-default-font-size);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+// El componente raíz ocupa al menos toda la pantalla
+app-root {
+  display: block;
+  min-height: 100vh;
+}
+
+::selection {
+  background-color: var(--mlt-default-color-seleccion-fondo);
+  color: var(--mlt-default-color-seleccion-texto);
+}
+
+// Con «menos movimiento» se apagan todas las animaciones y transiciones
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

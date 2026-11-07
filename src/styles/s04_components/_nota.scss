@@ -1,0 +1,21 @@
+// Sello redondo con la nota de una película.
+.c-nota {
+  // Tokens de diseño
+  --nota-color-fondo: var(--mlt-sys-color-alternativo-5);
+  --nota-color-texto: var(--mlt-sys-color-neutro-9);
+  --nota-medida-3: var(--mlt-sys-medida-3); // 42px
+  --nota-font-size-3: var(--mlt-sys-font-size-3); // 14px
+  --nota-font-weight-3: var(--mlt-sys-font-weight-3); // 600
+
+  // Propiedades CSS
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: var(--nota-medida-3);
+  height: var(--nota-medida-3);
+  border-radius: 50%;
+  background-color: var(--nota-color-fondo);
+  color: var(--nota-color-texto);
+  font-size: var(--nota-font-size-3);
+  font-weight: var(--nota-font-weight-3);
+}

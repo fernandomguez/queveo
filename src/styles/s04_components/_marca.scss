@@ -1,0 +1,115 @@
+// Logotipo «QUEVE + ojo» con tres animaciones: barrido, parpadeo y mirada.
+.c-marca {
+  // Tokens de diseño
+  --marca-color-texto: var(--mlt-sys-color-base-9);
+  --marca-color-destello: var(--mlt-sys-color-principal-5);
+  --marca-color-iris: var(--mlt-sys-color-alternativo-5);
+  --marca-color-subtitulo: var(--mlt-sys-color-base-8);
+  --marca-font: var(--mlt-sys-font-titulos);
+  --marca-font-weight-4: var(--mlt-sys-font-weight-4); // 800
+  --marca-font-size-9: var(--mlt-sys-font-size-9); // clamp(30px, 4.6vw, 51px)
+  --marca-font-size-4: var(--mlt-sys-font-size-4); // 15px
+  --marca-margin-3: var(--mlt-sys-margin-3); // 8px
+  --marca-ojo-contorno-width: 7;
+  --marca-ojo-play-width: 3;
+  --marca-duracion-3: var(--mlt-sys-duracion-3); // 5s
+  --marca-duracion-4: var(--mlt-sys-duracion-4); // 6s
+  --marca-margin-1: var(--mlt-sys-margin-1); // 4px
+  --marca-margin-0: var(--mlt-sys-margin-0); // 0px
+  --marca-medida-4: var(--mlt-sys-medida-4); // 44px
+  --marca-width-1: var(--mlt-sys-width-1); // 1px
+
+  // Propiedades CSS
+  display: block;
+
+  &__titulo {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--marca-margin-1);
+    margin: var(--marca-margin-0);
+    font-family: var(--marca-font);
+    font-weight: var(--marca-font-weight-4);
+    font-size: var(--marca-font-size-9);
+    letter-spacing: calc(-1 * var(--marca-width-1));
+    line-height: 1;
+  }
+
+  // Texto con un destello que lo recorre
+  &__texto {
+    background: linear-gradient(
+        100deg,
+        var(--marca-color-texto) 38%,
+        var(--marca-color-destello) 50%,
+        var(--marca-color-texto) 62%
+      )
+      100% 0 / 260% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: c-marca-barrido var(--marca-duracion-3) ease-in-out infinite;
+  }
+
+  &__ojo {
+    display: block;
+    width: var(--marca-medida-4);
+    height: var(--marca-medida-4);
+    overflow: visible;
+  }
+
+  &__parpado {
+    transform-origin: 50% 50%;
+    animation: c-marca-parpadeo var(--marca-duracion-4) infinite;
+  }
+
+  &__pupila {
+    animation: c-marca-mirar var(--marca-duracion-4) ease-in-out infinite;
+  }
+
+  &__contorno {
+    fill: none;
+    stroke: var(--marca-color-texto);
+    stroke-width: var(--marca-ojo-contorno-width);
+    stroke-linejoin: round;
+  }
+
+  &__iris {
+    fill: var(--marca-color-iris);
+  }
+
+  &__play {
+    fill: var(--marca-color-destello);
+    stroke: var(--marca-color-destello);
+    stroke-width: var(--marca-ojo-play-width);
+    stroke-linejoin: round;
+  }
+
+  &__subtitulo {
+    margin: var(--marca-margin-3) var(--marca-margin-0) var(--marca-margin-0);
+    font-size: var(--marca-font-size-4);
+    color: var(--marca-color-subtitulo);
+  }
+}
+
+@keyframes c-marca-barrido {
+  0%, 15% { background-position: 100% 0; }
+  60%, 100% { background-position: 0 0; }
+}
+
+@keyframes c-marca-parpadeo {
+  0%, 90%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.08); }
+}
+
+@keyframes c-marca-mirar {
+  0%, 20% { transform: translateX(var(--marca-margin-0)); }
+  35%, 55% { transform: translateX(var(--marca-margin-1)); }
+  70%, 100% { transform: translateX(calc(-1 * var(--marca-margin-1))); }
+}
+
+// Con «menos movimiento» el texto se queda quieto, ya iluminado
+@media (prefers-reduced-motion: reduce) {
+  .c-marca__texto {
+    background-position: 0 0;
+  }
+}

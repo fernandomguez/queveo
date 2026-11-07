@@ -1,0 +1,24 @@
+// Cabecera tipo cartelera: filete de color arriba y contenido centrado.
+.c-hero {
+  // Tokens de diseño
+  --hero-color-fondo: var(--mlt-sys-color-base-2);
+  --hero-color-filete: var(--mlt-sys-color-principal-5);
+  --hero-color-linea: var(--mlt-sys-color-base-4);
+  --hero-width-3: var(--mlt-sys-width-3); // 4px
+  --hero-width-1: var(--mlt-sys-width-1); // 1px
+  --hero-medida-12: var(--mlt-sys-medida-12); // 1380px
+  --hero-padding-10: var(--mlt-sys-padding-10); // 28px
+  --hero-padding-9: var(--mlt-sys-padding-9); // 24px
+  --hero-margin-0: var(--mlt-sys-margin-0); // 0px
+
+  // Propiedades CSS
+  border-top: var(--hero-width-3) solid var(--hero-color-filete);
+  border-bottom: var(--hero-width-1) solid var(--hero-color-linea);
+  background-color: var(--hero-color-fondo);
+
+  &__interior {
+    max-width: var(--hero-medida-12);
+    margin: var(--hero-margin-0) auto;
+    padding: var(--hero-padding-10) var(--hero-padding-9) var(--hero-padding-9);
+  }
+}

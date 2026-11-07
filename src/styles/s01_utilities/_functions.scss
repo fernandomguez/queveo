@@ -1,0 +1,11 @@
+@use "sass:string";
+
+// Color en formato válido dentro de una URL (#F6EEFF -> %23F6EEFF).
+@function color-en-url($color) {
+  @return '%23' + string.slice('#{$color}', 2);
+}
+
+// Flecha de los <select> dibujada en SVG, del color que se le pase.
+@function flecha-select($color) {
+  @return url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='#{color-en-url($color)}' stroke-width='2'/%3E%3C/svg%3E");
+}
